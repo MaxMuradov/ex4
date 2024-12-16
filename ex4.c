@@ -105,12 +105,12 @@ float Weight(float Pyramid[5][9], int i, int j)
 {
     float l_schoulder, r_schoulder;
 
-    if (check_bounds(i - 1, 0, 4) == 1 && check_bounds(j - 1, 0 , 9) == 1)
+    if (check_bounds(i - 1, 0, 4) == 1 && check_bounds(j - 1, 0 , 8) == 1)
         l_schoulder = Weight(Pyramid, i - 1, j - 1);
     else
         l_schoulder = 0;
 
-    if (check_bounds(i - 1, 0, 4) == 1 && check_bounds(j + 1, 0, 9) == 1)
+    if (check_bounds(i - 1, 0, 4) == 1 && check_bounds(j + 1, 0, 8) == 1)
         r_schoulder = Weight(Pyramid, i - 1, j + 1);
     else
        r_schoulder = 0;
@@ -131,6 +131,8 @@ void task2HumanPyramid()
     int n = 4;
     int jj = -1;
 
+    printf("Please enter the weights of the cheerleaders:\n");
+
     for (int i = 0; i <= n; i++, jj = -1)
     {
         for (int j = 0; j < 9; j++)
@@ -147,31 +149,40 @@ void task2HumanPyramid()
         }
     }
 
-
-    for (int i = 0; i <= n; i++, printf("\n"))
+    for (int i = 0; i <= n; i++, jj = -1, printf("\n"))
+    {
         for (int j = 0; j < 9; j++)
-            printf(" %2.2f", Weight(HumanPyramid, i, j)); // Correct format specifier
+        {
+            if ((j == n - i) || (j == jj))
+            {
+                if (j + 2 <= n + i)
+                    jj = j + 2;
+                
+                printf(" %2.2f", Weight(HumanPyramid, i, j));// Use address-of operator
+            }
+        }
+    }
+    
+   
 }
 
-int CheckBraces(char ch, int b00l)
+int CheckBraces(char ch, int b00l, int first_input)
 {
     char nextch = getchar();
 
-    // Debugging outputs
-    printf("Char: %c\n", ch);
-    printf("Next: %c\n", nextch);
 
     // Base case: end of input or mismatch
     if (nextch == '\n' || b00l == 0)
-        return b00l;
-
+        return b00l - first_input;
+    
+    
     // Skip invalid characters
     if (nextch != '(' && nextch != ')' &&
         nextch != '[' && nextch != ']' &&
         nextch != '{' && nextch != '}' &&
         nextch != '<' && nextch != '>')
     {
-        return CheckBraces(ch, b00l); // Continue reading without altering logic
+        return CheckBraces(ch, b00l, 0); // Continue reading without altering logic
     }
 
     // Check if the current brace is matched by the next
@@ -186,7 +197,7 @@ int CheckBraces(char ch, int b00l)
     // Check for opening braces to process further
     if (nextch == '(' || nextch == '[' || nextch == '{' || nextch == '<')
     {
-        return CheckBraces(nextch, b00l) && CheckBraces(ch, b00l);
+        return CheckBraces(nextch, b00l, 0) && CheckBraces(ch, b00l, 0);
     }
 
     // Unmatched or invalid brace
@@ -197,17 +208,18 @@ void task3ParenthesisValidator()
 {
     char ch;
     int b00l;
+    printf("Please enter a term for validation:\n");
     scanf(" %c", &ch);
     if (ch == '(' || ch == '[' || ch == '{' || ch == '<')
     {
         b00l = 1;
-        if (CheckBraces(ch, b00l) == 0)
-            printf("The parentheses are not balanced correctly.");
+        if (CheckBraces(ch, b00l, 1 ) == 0)
+            printf("The parentheses are not balanced correctly.\n");
         else
-            printf("The parentheses are balanced correctly.");
+            printf("The parentheses are balanced correctly.\n");
     }
     else
-        printf("The parentheses are not balanced correctly.");
+        printf("The parentheses are not balanced correctly.\n");
 }
 
 void task4QueensBattle()
