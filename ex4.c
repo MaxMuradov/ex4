@@ -222,9 +222,71 @@ void task3ParenthesisValidator()
         printf("The parentheses are not balanced correctly.\n");
 }
 
+int checkUnusedColor(char c, char Color[20], int size)
+{
+    for (int i = 0; i < size; i++)
+        if (Color[i] == c)
+            return i;
+        else
+            return -1;
+}
+
+int PlaceQueen(int x, int y, int X_axis[20], int Y_axis[20], char Color[20], char Board[20][20], int size)
+{
+    if (X_axis[x] == 0 && Y_axis[y] == 0 && checkUnusedColor(Board[x][y], Color, size) != -1)
+    {
+        X_axis[x] = 1;
+        Y_axis[y] = 1;
+        Color[checkUnusedColor(Board[x][y], Color, size)] = '0';
+        return 1;
+    }
+
+    if (checkUnusedColor(Board[x][y], Color, size) == -1)
+        return 0;
+
+    if (X_axis[x] != 0 && check_bounds(x, 0, size - 1) == 1)
+        return PlaceQueen(x + 1, y, X_axis, Y_axis, Color, Board, size);
+
+    if (Y_axis[y] != 0 && check_bounds(y, 0, size - 1) == 1)
+        return PlaceQueen(x, y + 1, X_axis, Y_axis, Color, Board, size);
+
+   
+}
+
 void task4QueensBattle()
 {
-    // Todo
+    char Board[20][20];
+    int X_axis[20];
+    int Y_axis[20];
+    char Color[20];
+    int size, counter = 0;
+    printf("Please enter the board dimensions:\n");
+    scanf_s(" %d", &size);
+    printf("Please enter the %d*%d puzzle board:\n", size, size);
+
+    for (int i = 0; i < size; i++)
+        for (int j = 0; j < size; j++)
+        {
+            X_axis[i] = Y_axis[i] = 0;
+
+            scanf_s(" %c", &Board[i][j]);
+
+            for (int k = counter; k >= 0; k--)
+            {
+                if (Color[k] == Board[i][j])
+                    break;
+                else
+                Color[counter++] = Board[i][j];
+            }
+        }
+
+    for (int i = 0; i < size; i++)
+    PlaceQueen(i, 0, X_axis, Y_axis, Color, Board, size);
+
+    /*for (int i = 0; i < size; i++, printf("\n"))
+        for (int j = 0; j < size; j++)
+            printf("%c", Board[i][j]);*/
+
 }
 
 void task5CrosswordGenerator()
