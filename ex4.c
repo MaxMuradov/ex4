@@ -26,7 +26,7 @@ int main()
             "5. Crossword Generator\n"
             "6. Exit\n");
 
-        if (scanf_s("%d", &task))
+        if (scanf("%d", &task))
         {
             switch (task)
             {
@@ -55,7 +55,7 @@ int main()
         }
         else
         {
-            scanf_s("%*s");
+            scanf("%*s");
         }
 
     } while (task != 6);
@@ -88,7 +88,7 @@ void task1RobotPaths()
     int counter = 0;
     int x, y;
     printf("Please enter the coordinates of the robot (column, row):\n");
-    scanf_s(" %d %d", &x, &y);
+    scanf(" %d %d", &x, &y);
     printf("The total number of paths the robot can take to reach home is: %d\n", RobotPath(x, y));
 
 }
@@ -142,7 +142,7 @@ void task2HumanPyramid()
                 if (j + 2 <= n + i)
                     jj = j + 2;
 
-                scanf_s(" %f", &HumanPyramid[i][j]); // Use address-of operator
+                scanf(" %f", &HumanPyramid[i][j]); // Use address-of operator
             }
         }
     }
@@ -155,21 +155,41 @@ void task2HumanPyramid()
 
 int CheckBraces(char ch, int b00l)
 {
-    char nextch;
-    scanf_s(" %c", &nextch);
+    char nextch = getchar();
 
-    //Base case
+    // Debugging outputs
+    printf("Char: %c\n", ch);
+    printf("Next: %c\n", nextch);
+
+    // Base case: end of input or mismatch
     if (nextch == '\n' || b00l == 0)
         return b00l;
 
-    //Check if braces are closed
-    if (ch == '(' && nextch == ')' || ch == nextch - 2)
-        return b00l;
+    // Skip invalid characters
+    if (nextch != '(' && nextch != ')' &&
+        nextch != '[' && nextch != ']' &&
+        nextch != '{' && nextch != '}' &&
+        nextch != '<' && nextch != '>')
+    {
+        return CheckBraces(ch, b00l); // Continue reading without altering logic
+    }
 
-    //Moving right
+    // Check if the current brace is matched by the next
+    if ((ch == '(' && nextch == ')') ||
+        (ch == '[' && nextch == ']') ||
+        (ch == '{' && nextch == '}') ||
+        (ch == '<' && nextch == '>'))
+    {
+        return 1; // Pair matched
+    }
+
+    // Check for opening braces to process further
     if (nextch == '(' || nextch == '[' || nextch == '{' || nextch == '<')
-        return CheckBraces(nextch, b00l);
+    {
+        return CheckBraces(nextch, b00l) && CheckBraces(ch, b00l);
+    }
 
+    // Unmatched or invalid brace
     return 0;
 }
 
@@ -177,7 +197,7 @@ void task3ParenthesisValidator()
 {
     char ch;
     int b00l;
-    scanf_s(" %c", &ch);
+    scanf(" %c", &ch);
     if (ch == '(' || ch == '[' || ch == '{' || ch == '<')
     {
         b00l = 1;
