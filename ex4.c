@@ -26,7 +26,7 @@ int main()
             "5. Crossword Generator\n"
             "6. Exit\n");
 
-        if (scanf("%d", &task))
+        if (scanf_s("%d", &task))
         {
             switch (task)
             {
@@ -55,7 +55,7 @@ int main()
         }
         else
         {
-            scanf("%*s");
+            scanf_s("%*s");
         }
 
     } while (task != 6);
@@ -88,20 +88,75 @@ void task1RobotPaths()
     int counter = 0;
     int x, y;
     printf("Please enter the coordinates of the robot (column, row):\n");
-    scanf(" %d %d", &x, &y);
+    scanf_s(" %d %d", &x, &y);
     printf("The total number of paths the robot can take to reach home is: %d\n", RobotPath(x, y));
 
 }
 
+int check_bounds(int x, int border_l, int border_r)
+{
+    if (x >= border_l && x <= border_r)
+        return 1;
+    else
+        return 0;
+}
+
+float Weight(float Pyramid[5][9], int i, int j)
+{
+    float l_schoulder, r_schoulder;
+
+    if (check_bounds(i - 1, 0, 4) == 1 && check_bounds(j - 1, 0 , 9) == 1)
+        l_schoulder = Weight(Pyramid, i - 1, j - 1);
+    else
+        l_schoulder = 0;
+
+    if (check_bounds(i - 1, 0, 4) == 1 && check_bounds(j + 1, 0, 9) == 1)
+        r_schoulder = Weight(Pyramid, i - 1, j + 1);
+    else
+       r_schoulder = 0;
+
+    return (l_schoulder / 2) + (r_schoulder / 2) + Pyramid[i][j];
+}
+
 void task2HumanPyramid()
 {
-    // Todo
+    float HumanPyramid[5][9];
+
+    // 0 0 0 0 1 0 0 0 0
+    // 0 0 0 1 0 1 0 0 0
+    // 0 0 1 0 1 0 1 0 0
+    // 0 1 0 1 0 1 0 1 0
+    // 1 0 1 0 1 0 1 0 1
+
+    int n = 4;
+    int jj = -1;
+
+    for (int i = 0; i <= n; i++, jj = -1)
+    {
+        for (int j = 0; j < 9; j++)
+        {
+            HumanPyramid[i][j] = 0.0; // Initialize to 0
+
+            if ((j == n - i) || (j == jj))
+            {
+                if (j + 2 <= n + i)
+                    jj = j + 2;
+
+                scanf_s(" %f", &HumanPyramid[i][j]); // Use address-of operator
+            }
+        }
+    }
+
+
+    for (int i = 0; i <= n; i++, printf("\n"))
+        for (int j = 0; j < 9; j++)
+            printf(" %2.2f", Weight(HumanPyramid, i, j)); // Correct format specifier
 }
 
 int CheckBraces(char ch, int b00l)
 {
     char nextch;
-    scanf(" %c", &nextch);
+    scanf_s(" %c", &nextch);
 
     //Base case
     if (nextch == '\n' || b00l == 0)
@@ -122,7 +177,7 @@ void task3ParenthesisValidator()
 {
     char ch;
     int b00l;
-    scanf(" %*c", &ch);
+    scanf_s(" %c", &ch);
     if (ch == '(' || ch == '[' || ch == '{' || ch == '<')
     {
         b00l = 1;
