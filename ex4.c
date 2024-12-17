@@ -6,6 +6,8 @@ Assignment: ex4
 #include <stdio.h>
 #include <string.h>
 
+#define SIZE = 20
+
 void task1RobotPaths();
 void task2HumanPyramid();
 void task3ParenthesisValidator();
@@ -26,7 +28,7 @@ int main()
             "5. Crossword Generator\n"
             "6. Exit\n");
 
-        if (scanf("%d", &task))
+        if (scanf_s("%d", &task))
         {
             switch (task)
             {
@@ -55,7 +57,7 @@ int main()
         }
         else
         {
-            scanf("%*s");
+            scanf_s("%*s");
         }
 
     } while (task != 6);
@@ -88,7 +90,7 @@ void task1RobotPaths()
     int counter = 0;
     int x, y;
     printf("Please enter the coordinates of the robot (column, row):\n");
-    scanf(" %d %d", &x, &y);
+    scanf_s(" %d %d", &x, &y);
     printf("The total number of paths the robot can take to reach home is: %d\n", RobotPath(x, y));
 
 }
@@ -105,12 +107,12 @@ float Weight(float Pyramid[5][9], int i, int j)
 {
     float l_schoulder, r_schoulder;
 
-    if (check_bounds(i - 1, 0, 4) == 1 && check_bounds(j - 1, 0 , 8) == 1)
+    if (check_bounds(i - 1, 0, 4) == 1 && check_bounds(j - 1, 0 , 9) == 1)
         l_schoulder = Weight(Pyramid, i - 1, j - 1);
     else
         l_schoulder = 0;
 
-    if (check_bounds(i - 1, 0, 4) == 1 && check_bounds(j + 1, 0, 8) == 1)
+    if (check_bounds(i - 1, 0, 4) == 1 && check_bounds(j + 1, 0, 9) == 1)
         r_schoulder = Weight(Pyramid, i - 1, j + 1);
     else
        r_schoulder = 0;
@@ -131,8 +133,6 @@ void task2HumanPyramid()
     int n = 4;
     int jj = -1;
 
-    printf("Please enter the weights of the cheerleaders:\n");
-
     for (int i = 0; i <= n; i++, jj = -1)
     {
         for (int j = 0; j < 9; j++)
@@ -144,63 +144,34 @@ void task2HumanPyramid()
                 if (j + 2 <= n + i)
                     jj = j + 2;
 
-                scanf(" %f", &HumanPyramid[i][j]); // Use address-of operator
+                scanf_s(" %f", &HumanPyramid[i][j]); // Use address-of operator
             }
         }
     }
 
-    for (int i = 0; i <= n; i++, jj = -1, printf("\n"))
-    {
+
+    for (int i = 0; i <= n; i++, printf("\n"))
         for (int j = 0; j < 9; j++)
-        {
-            if ((j == n - i) || (j == jj))
-            {
-                if (j + 2 <= n + i)
-                    jj = j + 2;
-                
-                printf(" %2.2f", Weight(HumanPyramid, i, j));// Use address-of operator
-            }
-        }
-    }
-    
-   
+            printf(" %2.2f", Weight(HumanPyramid, i, j)); // Correct format specifier
 }
 
-int CheckBraces(char ch, int b00l, int first_input)
+int CheckBraces(char ch, int b00l)
 {
-    char nextch = getchar();
+    char nextch;
+    scanf_s(" %c", &nextch);
 
-
-    // Base case: end of input or mismatch
+    //Base case
     if (nextch == '\n' || b00l == 0)
-        return b00l - first_input;
-    
-    
-    // Skip invalid characters
-    if (nextch != '(' && nextch != ')' &&
-        nextch != '[' && nextch != ']' &&
-        nextch != '{' && nextch != '}' &&
-        nextch != '<' && nextch != '>')
-    {
-        return CheckBraces(ch, b00l, 0); // Continue reading without altering logic
-    }
+        return b00l;
 
-    // Check if the current brace is matched by the next
-    if ((ch == '(' && nextch == ')') ||
-        (ch == '[' && nextch == ']') ||
-        (ch == '{' && nextch == '}') ||
-        (ch == '<' && nextch == '>'))
-    {
-        return 1; // Pair matched
-    }
+    //Check if braces are closed
+    if (ch == '(' && nextch == ')' || ch == nextch - 2)
+        return b00l;
 
-    // Check for opening braces to process further
+    //Moving right
     if (nextch == '(' || nextch == '[' || nextch == '{' || nextch == '<')
-    {
-        return CheckBraces(nextch, b00l, 0) && CheckBraces(ch, b00l, 0);
-    }
+        return CheckBraces(nextch, b00l);
 
-    // Unmatched or invalid brace
     return 0;
 }
 
@@ -208,18 +179,17 @@ void task3ParenthesisValidator()
 {
     char ch;
     int b00l;
-    printf("Please enter a term for validation:\n");
-    scanf(" %c", &ch);
+    scanf_s(" %c", &ch);
     if (ch == '(' || ch == '[' || ch == '{' || ch == '<')
     {
         b00l = 1;
-        if (CheckBraces(ch, b00l, 1 ) == 0)
-            printf("The parentheses are not balanced correctly.\n");
+        if (CheckBraces(ch, b00l) == 0)
+            printf("The parentheses are not balanced correctly.");
         else
-            printf("The parentheses are balanced correctly.\n");
+            printf("The parentheses are balanced correctly.");
     }
     else
-        printf("The parentheses are not balanced correctly.\n");
+        printf("The parentheses are not balanced correctly.");
 }
 
 int checkUnusedColor(char c, char Color[20], int size)
@@ -229,6 +199,15 @@ int checkUnusedColor(char c, char Color[20], int size)
             return i;
         else
             return -1;
+}
+
+int checkInArray(char ch, char Array[20], int size)
+{
+    for (int i = 0; i < size; i++)
+        if (Array[i] == ch)
+            return 1;
+
+    return 0;
 }
 
 int PlaceQueen(int x, int y, int X_axis[20], int Y_axis[20], char Color[20], char Board[20][20], int size)
@@ -259,7 +238,7 @@ void task4QueensBattle()
     int X_axis[20];
     int Y_axis[20];
     char Color[20];
-    int size, counter = 0;
+    int size, counter = 0, c = 0;
     printf("Please enter the board dimensions:\n");
     scanf_s(" %d", &size);
     printf("Please enter the %d*%d puzzle board:\n", size, size);
@@ -271,13 +250,11 @@ void task4QueensBattle()
 
             scanf_s(" %c", &Board[i][j]);
 
-            for (int k = counter; k >= 0; k--)
+            if (checkInArray(Board[i][j], Color, size) == 0)
             {
-                if (Color[k] == Board[i][j])
-                    break;
-                else
                 Color[counter++] = Board[i][j];
             }
+
         }
 
     for (int i = 0; i < size; i++)
