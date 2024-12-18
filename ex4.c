@@ -192,7 +192,21 @@ void task3ParenthesisValidator()
         printf("The parentheses are not balanced correctly.");
 }
 
-int checkUnusedColor(char c, char Color[20], int size)
+
+
+void null(int Array[20], int size)
+{
+    for (int i = 0; i < size; i++)
+        Array[i] = -1;
+}
+
+void Clone(char Array[20], char Clone[20], int size)
+{
+    for (int i = 0; i < size; i++)
+        Clone[i] = Array[i];
+}
+
+int CheckUnusedColor(char c, char Color[20], int size)
 {
     for (int i = 0; i < size; i++)
         if (Color[i] == c)
@@ -200,6 +214,25 @@ int checkUnusedColor(char c, char Color[20], int size)
         else
             return -1;
 }
+
+int CheckAround(int X_arr[20], int Y_arr[20], int x, int y, int size)
+{
+    //check diag +1
+    for (int i = 0; i < size; i++)
+    {
+        if ((X_arr[i] == x+1 && Y_arr[i] == y+1) || (X_arr[i] == x - 1 && Y_arr[i] == y - 1))
+    }
+
+}
+
+int Checkaxis(int Ax_arr[20], int x, int size)
+{
+    for (int i = 0; i < size; i++)
+        if (Ax_arr[i] == x)
+            return 0;
+    return 1;
+}
+
 
 int checkInArray(char ch, char Array[20], int size)
 {
@@ -210,26 +243,37 @@ int checkInArray(char ch, char Array[20], int size)
     return 0;
 }
 
-int PlaceQueen(int x, int y, int X_axis[20], int Y_axis[20], char Color[20], char Board[20][20], int size)
+int PlaceQueen(int x, int y, int X_axis[20], int Y_axis[20], char Color[20], char Board[20][20], int size, int countQ)
 {
-    if (X_axis[x] == 0 && Y_axis[y] == 0 && checkUnusedColor(Board[x][y], Color, size) != -1)
-    {
-        X_axis[x] = 1;
-        Y_axis[y] = 1;
-        Color[checkUnusedColor(Board[x][y], Color, size)] = '0';
+    if (countQ == size)
         return 1;
+
+    //Place queen
+    if (CheckAround(X_axis, Y_axis, x, y, size) && Checkaxis(X_axis, x, size) && Checkaxis(Y_axis, y, size) && CheckUnusedColor(Board[y][x], Color, size))
+    {
+        X_axis[countQ] = x;
+        Y_axis[countQ] = y;
+        countQ++;
     }
 
-    if (checkUnusedColor(Board[x][y], Color, size) == -1)
+    //Check if color is free
+    if (checkColor)
         return 0;
 
-    if (X_axis[x] != 0 && check_bounds(x, 0, size - 1) == 1)
-        return PlaceQueen(x + 1, y, X_axis, Y_axis, Color, Board, size);
+    //Check if around is free
+    if ()
 
-    if (Y_axis[y] != 0 && check_bounds(y, 0, size - 1) == 1)
-        return PlaceQueen(x, y + 1, X_axis, Y_axis, Color, Board, size);
+    //Check if axis X is free
+    if ()
+        countQ += PlaceQueen(x + 1, y, X_axis, Y_axis, Color, Board, size, countQ);
 
-   
+    //Check if axis Y is free
+    if ()
+        countQ += PlaceQueen(x, y + 1, X_axis, Y_axis, Color, Board, size);
+
+
+
+    return 0;
 }
 
 void task4QueensBattle()
@@ -238,6 +282,7 @@ void task4QueensBattle()
     int X_axis[20];
     int Y_axis[20];
     char Color[20];
+    char CColor[20];
     int size, counter = 0, c = 0;
     printf("Please enter the board dimensions:\n");
     scanf_s(" %d", &size);
@@ -258,7 +303,16 @@ void task4QueensBattle()
         }
 
     for (int i = 0; i < size; i++)
-    PlaceQueen(i, 0, X_axis, Y_axis, Color, Board, size);
+    {
+        int counterQueen = 0;
+        Clone(Color, CColor, size);
+        null(X_axis, size);
+        null(Y_axis, size);
+        if (PlaceQueen(i, 0, X_axis, Y_axis, CColor, Board, size, counterQueen) == 1)
+            break;
+        
+        printf("No Solution");
+    }
 
     /*for (int i = 0; i < size; i++, printf("\n"))
         for (int j = 0; j < size; j++)
