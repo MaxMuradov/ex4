@@ -215,14 +215,33 @@ int CheckUnusedColor(char c, char Color[20], int size)
             return -1;
 }
 
-int CheckAround(int X_arr[20], int Y_arr[20], int x, int y, int size)
+int CheckAround(int X_arr[20], int Y_arr[20], int x, int y, int size, int countQueen)
 {
-    //check diag +1
-    for (int i = 0; i < size; i++)
-    {
-        if ((X_arr[i] == x+1 && Y_arr[i] == y+1) || (X_arr[i] == x - 1 && Y_arr[i] == y - 1))
-    }
+    //check right up pos
+    if (check_bounds(x + 1, 0, size - 1) && check_bounds(y + 1, 0, size - 1))
+        for (int i = 0; i < countQueen; i++)
+            if (X_arr[i] == x + 1 && Y_arr[i] == y + 1)
+                return 0;
 
+    //check right down pos
+    if (check_bounds(x + 1, 0, size - 1) && check_bounds(y - 1, 0, size - 1))
+        for (int i = 0; i < countQueen; i++)
+            if (X_arr[i] == x + 1 && Y_arr[i] == y - 1)
+                return 0;
+
+    //check left up pos
+    if (check_bounds(x - 1, 0, size - 1) && check_bounds(y + 1, 0, size - 1))
+        for (int i = 0; i < countQueen; i++)
+            if (X_arr[i] == x - 1 && Y_arr[i] == y - 1)
+                return 0;
+
+    //check left down pos
+    if (check_bounds(x - 1, 0, size - 1) && check_bounds(y - 1, 0, size - 1))
+        for (int i = 0; i < countQueen; i++)
+            if (X_arr[i] == x - 1 && Y_arr[i] == y - 1)
+                return 0;
+
+    return 1;
 }
 
 int Checkaxis(int Ax_arr[20], int x, int size)
@@ -249,29 +268,53 @@ int PlaceQueen(int x, int y, int X_axis[20], int Y_axis[20], char Color[20], cha
         return 1;
 
     //Place queen
-    if (CheckAround(X_axis, Y_axis, x, y, size) && Checkaxis(X_axis, x, size) && Checkaxis(Y_axis, y, size) && CheckUnusedColor(Board[y][x], Color, size))
+    int tmp = CheckUnusedColor(Board[y][x], Color, size);
+    if (CheckAround(X_axis, Y_axis, x, y, size, countQ) == 1 && Checkaxis(X_axis, x, size) == 1 && Checkaxis(Y_axis, y, size) == 1 && tmp == -1)
     {
         X_axis[countQ] = x;
         Y_axis[countQ] = y;
+        Color[tmp] = '0';
         countQ++;
     }
 
     //Check if color is free
-    if (checkColor)
+    if (tmp != -1)
         return 0;
 
-    //Check if around is free
-    if ()
-
-    //Check if axis X is free
-    if ()
+    //Check if axis X is free Move Right
+    if (check_bounds(x + 1, 0, size - 1) == 1 && Checkaxis(X_axis, x + 1, size) == 1)
         countQ += PlaceQueen(x + 1, y, X_axis, Y_axis, Color, Board, size, countQ);
 
-    //Check if axis Y is free
-    if ()
-        countQ += PlaceQueen(x, y + 1, X_axis, Y_axis, Color, Board, size);
+    //Check if axis Y is free Move Up
+    if (check_bounds(y + 1, 0, size - 1) == 1 && Checkaxis(Y_axis, y + 1, size) == 1)
+        countQ += PlaceQueen(x, y + 1, X_axis, Y_axis, Color, Board, size, countQ);
 
+    //Check if axis X is free Move Left
+    if (check_bounds(x - 1, 0, size - 1) == 1 && Checkaxis(X_axis, x - 1, size) == 1)
+        countQ += PlaceQueen(x - 1, y, X_axis, Y_axis, Color, Board, size, countQ);
 
+    //Check if axis Y is free Move Down
+    if (check_bounds(y - 1, 0, size - 1) == 1 && Checkaxis(Y_axis, y - 1, size) == 1)
+        countQ += PlaceQueen(x, y - 1, X_axis, Y_axis, Color, Board, size, countQ);
+
+    //Check if around is free
+    if (CheckAround(X_axis, Y_axis, x, y, size, countQ) == 1)
+    {
+        // Move right up pos
+        if (check_bounds(x + 1, 0, size - 1) && check_bounds(y + 1, 0, size - 1))
+            countQ += PlaceQueen(x + 1, y + 1, X_axis, Y_axis, Color, Board, size, countQ);
+
+        //Move right down pos
+        if (check_bounds(x + 1, 0, size - 1) && check_bounds(y - 1, 0, size - 1))
+            countQ += PlaceQueen(x + 1, y - 1, X_axis, Y_axis, Color, Board, size, countQ);
+
+        //Move left up pos
+        if (check_bounds(x - 1, 0, size - 1) && check_bounds(y + 1, 0, size - 1))
+            countQ += PlaceQueen(x - 1, y + 1, X_axis, Y_axis, Color, Board, size, countQ);
+        //Move left down pos
+        if (check_bounds(x - 1, 0, size - 1) && check_bounds(y - 1, 0, size - 1))
+            countQ += PlaceQueen(x - 1, y - 1, X_axis, Y_axis, Color, Board, size, countQ);
+    }
 
     return 0;
 }
@@ -318,6 +361,8 @@ void task4QueensBattle()
         for (int j = 0; j < size; j++)
             printf("%c", Board[i][j]);*/
 
+    for (int i = 0; i < size; i++)
+        printf("queen x =  %d, y = %d", X_axis[i], Y_axis[i]);
 }
 
 void task5CrosswordGenerator()
