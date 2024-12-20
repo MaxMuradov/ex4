@@ -158,38 +158,57 @@ void task2HumanPyramid()
 int CheckBraces(char ch, int b00l)
 {
     char nextch;
-    scanf_s(" %c", &nextch);
+    scanf_s("%c", &nextch);
+    /*nextch = getchar();*/
 
-    //Base case
+    // Base case: end of input or mismatch
     if (nextch == '\n' || b00l == 0)
         return b00l;
 
-    //Check if braces are closed
-    if (ch == '(' && nextch == ')' || ch == nextch - 2)
-        return b00l;
+    //// Skip invalid characters
+    if (nextch != '(' && nextch != ')' &&
+        nextch != '[' && nextch != ']' &&
+        nextch != '{' && nextch != '}' &&
+        nextch != '<' && nextch != '>')
+    {
+        return CheckBraces(ch, b00l);// Continue reading without altering logic
+    }
 
-    //Moving right
+    //// Check if the current brace is matched by the next
+    if ((ch == '(' && nextch == ')') ||
+        (ch == '[' && nextch == ']') ||
+        (ch == '{' && nextch == '}') ||
+        (ch == '<' && nextch == '>') ||
+        ch == '\n' && nextch == '\n')
+    {
+        return 1;// Pair matched
+    }
+
+    //// Check for opening braces to process further
     if (nextch == '(' || nextch == '[' || nextch == '{' || nextch == '<')
-        return CheckBraces(nextch, b00l);
+    {
+        return CheckBraces(nextch, b00l) && CheckBraces(ch, b00l);
+    }
 
+    //// Unmatched or invalid brace
     return 0;
 }
+
 
 void task3ParenthesisValidator()
 {
     char ch;
+    char buffer = '0';
     int b00l;
-    scanf_s(" %c", &ch);
-    if (ch == '(' || ch == '[' || ch == '{' || ch == '<')
-    {
-        b00l = 1;
+    b00l = 1;
+    ch = '\n';
+   // ch = getchar();
+    scanf_s("%*c", buffer);
         if (CheckBraces(ch, b00l) == 0)
-            printf("The parentheses are not balanced correctly.");
+            printf("The parentheses are not balanced correctly.\n");
         else
-            printf("The parentheses are balanced correctly.");
-    }
-    else
-        printf("The parentheses are not balanced correctly.");
+            printf("The parentheses are balanced correctly.\n");
+
 }
 
 
@@ -211,8 +230,7 @@ int CheckUnusedColor(char c, char Color[20], int size)
     for (int i = 0; i < size; i++)
         if (Color[i] == c)
             return i;
-        else
-            return -1;
+    return -1;
 }
 
 int CheckAround(int X_arr[20], int Y_arr[20], int x, int y, int size, int countQueen)
@@ -264,12 +282,15 @@ int checkInArray(char ch, char Array[20], int size)
 
 int PlaceQueen(int x, int y, int X_axis[20], int Y_axis[20], char Color[20], char Board[20][20], int size, int countQ)
 {
+
+    printf("Y = %d, X = %d\n", y, x);
+
     if (countQ == size)
         return 1;
 
     //Place queen
     int tmp = CheckUnusedColor(Board[y][x], Color, size);
-    if (CheckAround(X_axis, Y_axis, x, y, size, countQ) == 1 && Checkaxis(X_axis, x, size) == 1 && Checkaxis(Y_axis, y, size) == 1 && tmp == -1)
+    if (CheckAround(X_axis, Y_axis, x, y, size, countQ) == 1 && Checkaxis(X_axis, x, size) == 1 && Checkaxis(Y_axis, y, size) == 1 && tmp != -1)
     {
         X_axis[countQ] = x;
         Y_axis[countQ] = y;
@@ -278,41 +299,41 @@ int PlaceQueen(int x, int y, int X_axis[20], int Y_axis[20], char Color[20], cha
     }
 
     //Check if color is free
-    if (tmp != -1)
+    if (tmp == -1)
         return 0;
 
     //Check if axis X is free Move Right
-    if (check_bounds(x + 1, 0, size - 1) == 1 && Checkaxis(X_axis, x + 1, size) == 1)
+    if (check_bounds(x + 1, 0, size - 1) == 1 && Checkaxis(X_axis, x + 1, size) == 1 && Checkaxis(Y_axis, y, size) == 1)
         countQ += PlaceQueen(x + 1, y, X_axis, Y_axis, Color, Board, size, countQ);
 
     //Check if axis Y is free Move Up
-    if (check_bounds(y + 1, 0, size - 1) == 1 && Checkaxis(Y_axis, y + 1, size) == 1)
+    if (check_bounds(y + 1, 0, size - 1) == 1 && Checkaxis(Y_axis, y + 1, size) == 1 && Checkaxis(X_axis, x, size) == 1)
         countQ += PlaceQueen(x, y + 1, X_axis, Y_axis, Color, Board, size, countQ);
 
     //Check if axis X is free Move Left
-    if (check_bounds(x - 1, 0, size - 1) == 1 && Checkaxis(X_axis, x - 1, size) == 1)
+    if (check_bounds(x - 1, 0, size - 1) == 1 && Checkaxis(X_axis, x - 1, size) == 1 && Checkaxis(Y_axis, y, size) == 1)
         countQ += PlaceQueen(x - 1, y, X_axis, Y_axis, Color, Board, size, countQ);
 
     //Check if axis Y is free Move Down
-    if (check_bounds(y - 1, 0, size - 1) == 1 && Checkaxis(Y_axis, y - 1, size) == 1)
+    if (check_bounds(y - 1, 0, size - 1) == 1 && Checkaxis(Y_axis, y - 1, size) == 1 && Checkaxis(X_axis, x, size) == 1)
         countQ += PlaceQueen(x, y - 1, X_axis, Y_axis, Color, Board, size, countQ);
 
     //Check if around is free
     if (CheckAround(X_axis, Y_axis, x, y, size, countQ) == 1)
     {
-        // Move right up pos
-        if (check_bounds(x + 1, 0, size - 1) && check_bounds(y + 1, 0, size - 1))
+        //Move right up pos
+        if (check_bounds(x + 1, 0, size - 1) && check_bounds(y + 1, 0, size - 1) && Checkaxis(X_axis, x + 1, size) == 1 && Checkaxis(Y_axis, y+1, size) == 1)
             countQ += PlaceQueen(x + 1, y + 1, X_axis, Y_axis, Color, Board, size, countQ);
 
-        //Move right down pos
-        if (check_bounds(x + 1, 0, size - 1) && check_bounds(y - 1, 0, size - 1))
+        ////Move right down pos
+        if (check_bounds(x + 1, 0, size - 1) && check_bounds(y - 1, 0, size - 1) && Checkaxis(X_axis, x + 1, size) == 1 && Checkaxis(Y_axis, y- 1, size) == 1)
             countQ += PlaceQueen(x + 1, y - 1, X_axis, Y_axis, Color, Board, size, countQ);
 
-        //Move left up pos
-        if (check_bounds(x - 1, 0, size - 1) && check_bounds(y + 1, 0, size - 1))
+        ////Move left up pos
+        if (check_bounds(x - 1, 0, size - 1) && check_bounds(y + 1, 0, size - 1) && Checkaxis(X_axis, x - 1, size) == 1 && Checkaxis(Y_axis, y + 1, size) == 1)
             countQ += PlaceQueen(x - 1, y + 1, X_axis, Y_axis, Color, Board, size, countQ);
-        //Move left down pos
-        if (check_bounds(x - 1, 0, size - 1) && check_bounds(y - 1, 0, size - 1))
+        ////Move left down pos
+        if (check_bounds(x - 1, 0, size - 1) && check_bounds(y - 1, 0, size - 1) && Checkaxis(X_axis, x - 1, size) == 1 && Checkaxis(Y_axis, y - 1, size) == 1)
             countQ += PlaceQueen(x - 1, y - 1, X_axis, Y_axis, Color, Board, size, countQ);
     }
 
@@ -334,28 +355,25 @@ void task4QueensBattle()
     for (int i = 0; i < size; i++)
         for (int j = 0; j < size; j++)
         {
-            X_axis[i] = Y_axis[i] = 0;
-
             scanf_s(" %c", &Board[i][j]);
 
             if (checkInArray(Board[i][j], Color, size) == 0)
             {
                 Color[counter++] = Board[i][j];
             }
-
         }
 
-    for (int i = 0; i < size; i++)
-    {
+   // for (int i = 0; i < size; i++)
+    //{
         int counterQueen = 0;
         Clone(Color, CColor, size);
         null(X_axis, size);
         null(Y_axis, size);
-        if (PlaceQueen(i, 0, X_axis, Y_axis, CColor, Board, size, counterQueen) == 1)
-            break;
+        if (PlaceQueen(2, 0, X_axis, Y_axis, CColor, Board, size, counterQueen) == 1)
+           // break;
         
-        printf("No Solution");
-    }
+       // printf("No Solution");
+   // }
 
     /*for (int i = 0; i < size; i++, printf("\n"))
         for (int j = 0; j < size; j++)
