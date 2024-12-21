@@ -5,6 +5,7 @@ Assignment: ex4
 *******************/
 #include <stdio.h>
 #include <string.h>
+#include<stdlib.h>
 
 #define SIZE = 20
 
@@ -233,6 +234,15 @@ int CheckUnusedColor(char c, char Color[20], int size)
     return -1;
 }
 
+//int CheckAround(int X_arr[20], int Y_arr[20], int x, int y, int size, int countQueen) {
+//    for (int i = 0; i < countQueen; i++) {
+//        if (abs(X_arr[i] - x) <= 1 && abs(Y_arr[i] - y) <= 1) {
+//            return 0; // Position is adjacent
+//        }
+//    }
+//    return 1;
+//}
+
 int CheckAround(int X_arr[20], int Y_arr[20], int x, int y, int size, int countQueen)
 {
     //check right up pos
@@ -262,6 +272,7 @@ int CheckAround(int X_arr[20], int Y_arr[20], int x, int y, int size, int countQ
     return 1;
 }
 
+
 int Checkaxis(int Ax_arr[20], int x, int size)
 {
     for (int i = 0; i < size; i++)
@@ -282,62 +293,44 @@ int checkInArray(char ch, char Array[20], int size)
 
 int PlaceQueen(int x, int y, int X_axis[20], int Y_axis[20], char Color[20], char Board[20][20], int size, int countQ)
 {
-
-    printf("Y = %d, X = %d\n", y, x);
-
-    if (countQ == size)
+    // Base case: All queens are placed
+    if (countQ == size) {
         return 1;
+    }
 
-    //Place queen
+    // If row index exceeds the board size, return failure
+    if (y >= size) {
+        return 0;
+    }
+
+    // If column index exceeds the board size, move to the next row
+    if (x >= size) {
+        return PlaceQueen(0, y + 1, X_axis, Y_axis, Color, Board, size, countQ);
+    }
+
+    // Check if current position is valid
     int tmp = CheckUnusedColor(Board[y][x], Color, size);
-    if (CheckAround(X_axis, Y_axis, x, y, size, countQ) == 1 && Checkaxis(X_axis, x, size) == 1 && Checkaxis(Y_axis, y, size) == 1 && tmp != -1)
-    {
+    if (tmp != -1 && CheckAround(X_axis, Y_axis, x, y, size, countQ) == 1 &&
+        Checkaxis(X_axis, x, size) == 1 && Checkaxis(Y_axis, y, size) == 1) {
+
+        // Place the queen
         X_axis[countQ] = x;
         Y_axis[countQ] = y;
-        Color[tmp] = '0';
-        countQ++;
+        Color[tmp] = '0'; // Mark the color as used
+
+        // Recurse to place the next queen
+        if (PlaceQueen(0, y + 1, X_axis, Y_axis, Color, Board, size, countQ + 1)) {
+            return 1; // Solution found
+        }
+
+        // Backtrack if placement fails
+        X_axis[countQ] = -1;
+        Y_axis[countQ] = -1;
+        Color[tmp] = Board[y][x]; // Reset the color
     }
 
-    //Check if color is free
-    if (tmp == -1)
-        return 0;
-
-    //Check if axis X is free Move Right
-    if (check_bounds(x + 1, 0, size - 1) == 1 && Checkaxis(X_axis, x + 1, size) == 1 && Checkaxis(Y_axis, y, size) == 1)
-        countQ += PlaceQueen(x + 1, y, X_axis, Y_axis, Color, Board, size, countQ);
-
-    //Check if axis Y is free Move Up
-    if (check_bounds(y + 1, 0, size - 1) == 1 && Checkaxis(Y_axis, y + 1, size) == 1 && Checkaxis(X_axis, x, size) == 1)
-        countQ += PlaceQueen(x, y + 1, X_axis, Y_axis, Color, Board, size, countQ);
-
-    //Check if axis X is free Move Left
-    if (check_bounds(x - 1, 0, size - 1) == 1 && Checkaxis(X_axis, x - 1, size) == 1 && Checkaxis(Y_axis, y, size) == 1)
-        countQ += PlaceQueen(x - 1, y, X_axis, Y_axis, Color, Board, size, countQ);
-
-    //Check if axis Y is free Move Down
-    if (check_bounds(y - 1, 0, size - 1) == 1 && Checkaxis(Y_axis, y - 1, size) == 1 && Checkaxis(X_axis, x, size) == 1)
-        countQ += PlaceQueen(x, y - 1, X_axis, Y_axis, Color, Board, size, countQ);
-
-    //Check if around is free
-    if (CheckAround(X_axis, Y_axis, x, y, size, countQ) == 1)
-    {
-        //Move right up pos
-        if (check_bounds(x + 1, 0, size - 1) && check_bounds(y + 1, 0, size - 1) && Checkaxis(X_axis, x + 1, size) == 1 && Checkaxis(Y_axis, y+1, size) == 1)
-            countQ += PlaceQueen(x + 1, y + 1, X_axis, Y_axis, Color, Board, size, countQ);
-
-        ////Move right down pos
-        if (check_bounds(x + 1, 0, size - 1) && check_bounds(y - 1, 0, size - 1) && Checkaxis(X_axis, x + 1, size) == 1 && Checkaxis(Y_axis, y- 1, size) == 1)
-            countQ += PlaceQueen(x + 1, y - 1, X_axis, Y_axis, Color, Board, size, countQ);
-
-        ////Move left up pos
-        if (check_bounds(x - 1, 0, size - 1) && check_bounds(y + 1, 0, size - 1) && Checkaxis(X_axis, x - 1, size) == 1 && Checkaxis(Y_axis, y + 1, size) == 1)
-            countQ += PlaceQueen(x - 1, y + 1, X_axis, Y_axis, Color, Board, size, countQ);
-        ////Move left down pos
-        if (check_bounds(x - 1, 0, size - 1) && check_bounds(y - 1, 0, size - 1) && Checkaxis(X_axis, x - 1, size) == 1 && Checkaxis(Y_axis, y - 1, size) == 1)
-            countQ += PlaceQueen(x - 1, y - 1, X_axis, Y_axis, Color, Board, size, countQ);
-    }
-
-    return 0;
+    // Try the next column
+    return PlaceQueen(x + 1, y, X_axis, Y_axis, Color, Board, size, countQ);
 }
 
 void task4QueensBattle()
@@ -363,24 +356,24 @@ void task4QueensBattle()
             }
         }
 
-   // for (int i = 0; i < size; i++)
-    //{
         int counterQueen = 0;
         Clone(Color, CColor, size);
         null(X_axis, size);
         null(Y_axis, size);
-        if (PlaceQueen(2, 0, X_axis, Y_axis, CColor, Board, size, counterQueen) == 1)
-           // break;
-        
-       // printf("No Solution");
-   // }
+        if (PlaceQueen(0, 0, X_axis, Y_axis, CColor, Board, size, counterQueen) == 1)
+        {
+            for (int i = 0; i < size; i++, printf("\n"))
+                for (int j = 0; j < size; j++)
+                {
+                    for (int k = 0; k < size; k++)
+                        if (i == Y_axis[k] && j == X_axis[k])
+                            printf(" X");
+                    printf(" *");
+                }
+        }
+        else
+            printf("NO Solution\n");
 
-    /*for (int i = 0; i < size; i++, printf("\n"))
-        for (int j = 0; j < size; j++)
-            printf("%c", Board[i][j]);*/
-
-    for (int i = 0; i < size; i++)
-        printf("queen x =  %d, y = %d", X_axis[i], Y_axis[i]);
 }
 
 void task5CrosswordGenerator()
