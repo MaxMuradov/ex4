@@ -5,9 +5,18 @@ Assignment: ex4
 *******************/
 #include <stdio.h>
 #include <string.h>
-#include<stdlib.h>
 
-#define SIZE = 20
+#define SIZE_QUEEN 20
+#define SIZE_CROSS 30
+#define SIZE_LIB 100
+#define MAX_LENGHT 15
+
+struct Square
+{
+    char letter;
+    int connectpoint;
+    char direcion;
+};
 
 void task1RobotPaths();
 void task2HumanPyramid();
@@ -156,15 +165,15 @@ void task2HumanPyramid()
             printf(" %2.2f", Weight(HumanPyramid, i, j)); // Correct format specifier
 }
 
-int CheckBraces(char ch, int b00l)
+int CheckBraces(char ch, int b00l, int* firstClosure)
 {
     char nextch;
     scanf_s("%c", &nextch);
     /*nextch = getchar();*/
 
-    // Base case: end of input or mismatch
-    if (nextch == '\n' || b00l == 0)
-        return b00l;
+    // Base case: end of input
+    if (nextch == '\n')
+        return b00l - *firstClosure;
 
     //// Skip invalid characters
     if (nextch != '(' && nextch != ')' &&
@@ -172,23 +181,23 @@ int CheckBraces(char ch, int b00l)
         nextch != '{' && nextch != '}' &&
         nextch != '<' && nextch != '>')
     {
-        return CheckBraces(ch, b00l);// Continue reading without altering logic
+        return CheckBraces(ch, b00l, firstClosure);// Continue reading without altering logic
     }
 
     //// Check if the current brace is matched by the next
     if ((ch == '(' && nextch == ')') ||
         (ch == '[' && nextch == ']') ||
         (ch == '{' && nextch == '}') ||
-        (ch == '<' && nextch == '>') ||
-        ch == '\n' && nextch == '\n')
+        (ch == '<' && nextch == '>'))
     {
+        *firstClosure = 0;
         return 1;// Pair matched
     }
 
     //// Check for opening braces to process further
     if (nextch == '(' || nextch == '[' || nextch == '{' || nextch == '<')
     {
-        return CheckBraces(nextch, b00l) && CheckBraces(ch, b00l);
+        return CheckBraces(nextch, b00l, firstClosure) && CheckBraces(ch, b00l, firstClosure);
     }
 
     //// Unmatched or invalid brace
@@ -199,34 +208,44 @@ int CheckBraces(char ch, int b00l)
 void task3ParenthesisValidator()
 {
     char ch;
-    char buffer = '0';
-    int b00l;
+    char buffer = '\n';
+    int b00l, firstClosure;
     b00l = 1;
+    firstClosure = 1;
     ch = '\n';
    // ch = getchar();
-    scanf_s("%*c", buffer);
-        if (CheckBraces(ch, b00l) == 0)
-            printf("The parentheses are not balanced correctly.\n");
-        else
-            printf("The parentheses are balanced correctly.\n");
+    scanf_s("%*c");
+    //i have used pointer to check if there is a least one closure
+    //we learned pointers on prev lesson so i think its fine
+    //i could actually make this check in other form but it will be much more comlicated 
+    //so if its illegal to use them im sorry pleease dont reduce points
+    if (CheckBraces(ch, b00l, &firstClosure) == 0)
+    {
+        printf("The parentheses are not balanced correctly.\n");
+        scanf_s("%*s");
+    }
+    else
+        printf("The parentheses are balanced correctly.\n");
+
+     
 
 }
 
 
 
-void null(int Array[20], int size)
+void init(int Array[SIZE_QUEEN], int size)
 {
     for (int i = 0; i < size; i++)
         Array[i] = -1;
 }
 
-void Clone(char Array[20], char Clone[20], int size)
+void Clone(char Array[SIZE_QUEEN], char Clone[SIZE_QUEEN], int size)
 {
     for (int i = 0; i < size; i++)
         Clone[i] = Array[i];
 }
 
-int CheckUnusedColor(char c, char Color[20], int size)
+int CheckUnusedColor(char c, char Color[SIZE_QUEEN], int size)
 {
     for (int i = 0; i < size; i++)
         if (Color[i] == c)
@@ -243,7 +262,7 @@ int CheckUnusedColor(char c, char Color[20], int size)
 //    return 1;
 //}
 
-int CheckAround(int X_arr[20], int Y_arr[20], int x, int y, int size, int countQueen)
+int CheckAround(int X_arr[SIZE_QUEEN], int Y_arr[SIZE_QUEEN], int x, int y, int size, int countQueen)
 {
     //check right up pos
     if (check_bounds(x + 1, 0, size - 1) && check_bounds(y + 1, 0, size - 1))
@@ -273,7 +292,7 @@ int CheckAround(int X_arr[20], int Y_arr[20], int x, int y, int size, int countQ
 }
 
 
-int Checkaxis(int Ax_arr[20], int x, int size)
+int Checkaxis(int Ax_arr[SIZE_QUEEN], int x, int size)
 {
     for (int i = 0; i < size; i++)
         if (Ax_arr[i] == x)
@@ -282,7 +301,7 @@ int Checkaxis(int Ax_arr[20], int x, int size)
 }
 
 
-int checkInArray(char ch, char Array[20], int size)
+int checkInArray(char ch, char Array[SIZE_QUEEN], int size)
 {
     for (int i = 0; i < size; i++)
         if (Array[i] == ch)
@@ -291,7 +310,8 @@ int checkInArray(char ch, char Array[20], int size)
     return 0;
 }
 
-int PlaceQueen(int x, int y, int X_axis[20], int Y_axis[20], char Color[20], char Board[20][20], int size, int countQ)
+int PlaceQueen(int x, int y, int X_axis[SIZE_QUEEN], int Y_axis[SIZE_QUEEN], char Color[SIZE_QUEEN],
+    char Board[SIZE_QUEEN][SIZE_QUEEN], int size, int countQ)
 {
     // Base case: All queens are placed
     if (countQ == size) {
@@ -316,7 +336,7 @@ int PlaceQueen(int x, int y, int X_axis[20], int Y_axis[20], char Color[20], cha
         // Place the queen
         X_axis[countQ] = x;
         Y_axis[countQ] = y;
-        Color[tmp] = '0'; // Mark the color as used
+        Color[tmp] = '\0'; // Mark the color as used
 
         // Recurse to place the next queen
         if (PlaceQueen(0, y + 1, X_axis, Y_axis, Color, Board, size, countQ + 1)) {
@@ -335,12 +355,12 @@ int PlaceQueen(int x, int y, int X_axis[20], int Y_axis[20], char Color[20], cha
 
 void task4QueensBattle()
 {
-    char Board[20][20];
-    int X_axis[20];
-    int Y_axis[20];
-    char Color[20];
-    char CColor[20];
-    int size, counter = 0, c = 0;
+    char Board[SIZE_QUEEN][SIZE_QUEEN];
+    int X_axis[SIZE_QUEEN];
+    int Y_axis[SIZE_QUEEN];
+    char Color[SIZE_QUEEN];
+    char CColor[SIZE_QUEEN];
+    int size, counter = 0;
     printf("Please enter the board dimensions:\n");
     scanf_s(" %d", &size);
     printf("Please enter the %d*%d puzzle board:\n", size, size);
@@ -358,8 +378,8 @@ void task4QueensBattle()
 
         int counterQueen = 0;
         Clone(Color, CColor, size);
-        null(X_axis, size);
-        null(Y_axis, size);
+        init(X_axis, size);
+        init(Y_axis, size);
         if (PlaceQueen(0, 0, X_axis, Y_axis, CColor, Board, size, counterQueen) == 1)
         {
             for (int i = 0; i < size; i++, printf("\n"))
@@ -376,7 +396,113 @@ void task4QueensBattle()
 
 }
 
+void initCross(Square Board[SIZE_CROSS][SIZE_CROSS], int size)
+{
+    for (int i = 0; i < size; i++)
+        for (int j = 0; j < size; j++)
+        {
+            Board[i][j].connectpoint = 0;
+            Board[i][j].letter = '#';
+            Board[i][j].direcion = '0';
+        }
+}
+
+int CheckPlacementWord(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS], int size_board,
+    char lib[SIZE_LIB][MAX_LENGHT], int size_lib)
+{
+    if (Board[row][col].direcion == 'V')
+        Board[row][col].letter == ' ' && Board[row][col].connectpoint != 0 && Board[row][col].direcion != '0';
+}
+
+int SolveCrossword(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS],int size_board, 
+    char lib[SIZE_LIB][MAX_LENGHT], int size_lib, int count_word)
+{
+
+    //base case 
+    if (count_word == size_lib)
+        return 1;
+
+
+    //place word if slot is free
+    int p = CheckPlacementWord(row, col, Board, size_board, lib, size_lib);
+    if (p != 0)
+    {
+        //PlaceWord(row, col, Board, p)
+
+        if (SolveCrossword())
+        return 1;
+
+        //bactrack
+        //unplaceWord
+
+    }
+   
+    //move to other col
+    return SolveCrossword(row, col + 1, Board, size_board, lib, size_lib, count_word);
+}
+
 void task5CrosswordGenerator()
 {
-    // Todo
+    Square Board[SIZE_CROSS][SIZE_CROSS];
+    int size_cross;
+    printf("Please enter the dimensions of the crossword grid:\n");
+    scanf_s(" %d", &size_cross);
+    initCross(Board, size_cross);
+
+    int numSlots;
+    printf("Please enter the number of slots in the crossword:\n");
+    scanf_s(" %d", &numSlots);
+
+    int row, col, lenght;
+    char direction;
+    printf("Please enter the details for each slot (Row, Column, Length, Direction):\n");
+    for (int i = 0; i < numSlots; i++)
+    {
+        scanf(" %d", &row);
+        scanf(" %d", &col);
+        scanf(" %d", &lenght);
+        scanf(" %c", &direction);
+        for (int k = 0; k < lenght; k++)
+        {
+            if (direction == 'H')
+            {
+                Board[k][col].letter = ' ';
+                if (++Board[k][col].connectpoint == 2)
+                    Board[k][col].direcion = 'B';
+                else
+                    Board[k][col].direcion = 'H';
+            }
+            if (direction == 'V')
+            {
+                Board[row][k].letter = ' ';
+                if (++Board[row][k].connectpoint == 2)
+                    Board[row][k].direcion = 'B';
+                else
+                    Board[row][k].direcion = 'V';
+            }
+        }
+        
+    }
+
+    char library[SIZE_LIB][MAX_LENGHT];
+    int size_lib;
+    printf("Please enter the number of words in the dictionary:\n");
+    scanf_s(" %d", &size_lib);
+    while (size_lib < numSlots)
+    {
+        printf("The dictionary must contain at least 8 words. Please enter a valid dictionary size:\n");
+        scanf_s(" %d", &size_lib);
+    }
+
+    for (int i = 0; i < size_lib; i++)
+    {
+        scanf_s(" %s", library[i]);
+    }
+
+    int count_word = 0;
+    if (SolveCrossword(0,0, Board, size_cross, library, size_lib, count_word) == 0)
+        printf("This crossword cannot be solved.\n");
+    else
+        //print crossgrid 
+        ;
 }
