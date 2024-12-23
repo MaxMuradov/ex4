@@ -9,13 +9,16 @@ Assignment: ex4
 #define SIZE_QUEEN 20
 #define SIZE_CROSS 30
 #define SIZE_LIB 100
-#define MAX_LENGHT 15
+#define MAX_LENGTH 15
 
 struct Square
 {
     char letter;
     int connectpoint;
-    char direcion;
+    char direction;
+    int startOfWord;
+    int lengthH;
+    int lengthV;
 };
 
 void task1RobotPaths();
@@ -403,41 +406,138 @@ void initCross(Square Board[SIZE_CROSS][SIZE_CROSS], int size)
         {
             Board[i][j].connectpoint = 0;
             Board[i][j].letter = '#';
-            Board[i][j].direcion = '0';
+            Board[i][j].direction = '0';
+            Board[i][j].startOfWord = 0;
+            Board[i][j].lengthH = 0;
+            Board[i][j].lengthV = 0;
         }
 }
 
-int CheckPlacementWord(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS], int size_board,
-    char lib[SIZE_LIB][MAX_LENGHT], int size_lib)
-{
-    if (Board[row][col].direcion == 'V')
-        Board[row][col].letter == ' ' && Board[row][col].connectpoint != 0 && Board[row][col].direcion != '0';
+//int CheckPlacementWord(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS], int size_board,
+//    char lib[SIZE_LIB][MAX_LENGTH], int size_lib)
+//{
+//    if (Board[row][col].direction == 'V')
+//        for (int i = 0; i < size_lib; i++) // searching word from lib
+//            if (sizeof(lib[i]) / sizeof(lib[0]) == Board[row][col].lengthV) //check if same length
+//            {
+//                for (int j = 0; j < Board[row][col].lengthV; j++)
+//                {
+//
+//                }
+//            }
+//        
+//                //Board[row][col].letter == ' ' && Board[row][col].connectpoint != 0 && Board[row][col].direcion != '0';
+//
+//   // if (Board[row][col].direction == 'H')
+//    return 1;
+//}
+
+// Checks if the word can be placed at the given position
+int CheckPlacementWord(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS], int size_board, char lib[SIZE_LIB][MAX_LENGTH], int size_lib) {
+    for (int w = 0; w < size_lib; w++) {
+        int valid = 1;
+
+        // Check horizontal placement
+        if (Board[row][col].direction == 'H') {
+            for (int k = 0; k < Board[row][col].lengthH; k++) {
+                if (col + k >= size_board ||
+                    (Board[row][col + k].letter != ' ' && Board[row][col + k].letter != lib[w][k])) {
+                    valid = 0;
+                    break;
+                }
+            }
+            if (valid && strlen(lib[w]) == Board[row][col].lengthH)
+                return w;
+        }
+
+        // Check vertical placement
+        if (Board[row][col].direction == 'V') {
+            for (int k = 0; k < Board[row][col].lengthV; k++) {
+                if (row + k >= size_board ||
+                    (Board[row + k][col].letter != ' ' && Board[row + k][col].letter != lib[w][k])) {
+                    valid = 0;
+                    break;
+                }
+            }
+            if (valid && strlen(lib[w]) == Board[row][col].lengthV)
+                return w;
+        }
+    }
+
+    return -1; // No valid word found
 }
 
-int SolveCrossword(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS],int size_board, 
-    char lib[SIZE_LIB][MAX_LENGHT], int size_lib, int count_word)
-{
 
-    //base case 
+// Place a word on the board
+void PlaceWord(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS], char word[MAX_LENGTH]) {
+    if (Board[row][col].direction == 'H') {
+        for (int k = 0; word[k] != '\0'; k++) {
+            Board[row][col + k].letter = word[k];
+        }
+    }
+    else if (Board[row][col].direction == 'V') {
+        for (int k = 0; word[k] != '\0'; k++) {
+            Board[row + k][col].letter = word[k];
+        }
+    }
+}
+
+// Remove a word from the board (backtracking step)
+void UnplaceWord(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS], char word[MAX_LENGTH]) {
+    if (Board[row][col].direction == 'H') {
+        for (int k = 0; word[k] != '\0'; k++) {
+            Board[row][col + k].letter = ' ';
+        }
+    }
+    else if (Board[row][col].direction == 'V') {
+        for (int k = 0; word[k] != '\0'; k++) {
+            Board[row + k][col].letter = ' ';
+        }
+    }
+}
+
+
+int SolveCrossword(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS], int size_board,
+    char lib[SIZE_LIB][MAX_LENGTH], int size_lib, int count_word) {
+
+    // Base case: All words placed
     if (count_word == size_lib)
         return 1;
 
+    // Move to the next row if column exceeds the board size
+    if (col >= size_board)
+        return SolveCrossword(row + 1, 0, Board, size_board, lib, size_lib, count_word);
 
-    //place word if slot is free
+    // If row exceeds the board size, no solution
+    if (row >= size_board)
+        return 0;
+
+    // Skip cells that are not the start of a word
+    if (!Board[row][col].startOfWord)
+        return SolveCrossword(row, col + 1, Board, size_board, lib, size_lib, count_word);
+
+    // Try placing a word in the current slot
     int p = CheckPlacementWord(row, col, Board, size_board, lib, size_lib);
-    if (p != 0)
-    {
-        //PlaceWord(row, col, Board, p)
+    if (p != -1) {
+        PlaceWord(row, col, Board, lib[p]);
 
-        if (SolveCrossword())
-        return 1;
+        // Mark the word as used by swapping it to the end of the list
+        char temp[MAX_LENGTH];
+        strcpy_s(temp, lib[p]);
+        strcpy_s(lib[p], lib[size_lib - 1]);
+        strcpy_s(lib[size_lib - 1], temp);
 
-        //bactrack
-        //unplaceWord
+        // Recur to place the next word
+        if (SolveCrossword(row, col + 1, Board, size_board, lib, size_lib - 1, count_word + 1))
+            return 1;
 
+        // Backtrack: Undo the placement and restore the library
+        UnplaceWord(row, col, Board, temp);
+        strcpy_s(lib[size_lib - 1], lib[p]);
+        strcpy_s(lib[p], temp);
     }
-   
-    //move to other col
+
+    // Try the next cell
     return SolveCrossword(row, col + 1, Board, size_board, lib, size_lib, count_word);
 }
 
@@ -453,38 +553,48 @@ void task5CrosswordGenerator()
     printf("Please enter the number of slots in the crossword:\n");
     scanf_s(" %d", &numSlots);
 
-    int row, col, lenght;
+    int row, col, length;
     char direction;
     printf("Please enter the details for each slot (Row, Column, Length, Direction):\n");
     for (int i = 0; i < numSlots; i++)
     {
-        scanf(" %d", &row);
-        scanf(" %d", &col);
-        scanf(" %d", &lenght);
-        scanf(" %c", &direction);
-        for (int k = 0; k < lenght; k++)
+        scanf_s(" %d", &row);
+        scanf_s(" %d", &col);
+        scanf_s(" %d", &length);
+        scanf_s(" %c", &direction);
+
+        Board[row][col].startOfWord = 1;
+ 
+        if (direction == 'H')
         {
-            if (direction == 'H')
-            {
-                Board[k][col].letter = ' ';
-                if (++Board[k][col].connectpoint == 2)
-                    Board[k][col].direcion = 'B';
-                else
-                    Board[k][col].direcion = 'H';
-            }
-            if (direction == 'V')
+            Board[row][col].direction = 'H';
+            Board[row][col].lengthH = length;
+            for (int k = col; k < length + col; k++)
             {
                 Board[row][k].letter = ' ';
-                if (++Board[row][k].connectpoint == 2)
-                    Board[row][k].direcion = 'B';
-                else
-                    Board[row][k].direcion = 'V';
+                ++Board[row][k].connectpoint;
             }
         }
-        
+            
+        if (direction == 'V')
+        {
+            Board[row][col].lengthV = length;
+            for (int k = row; k < length + row; k++)
+            {
+                Board[k][col].letter = ' ';
+                ++Board[k][col].connectpoint;
+            }
+        }
+
+        if (Board[row][col].connectpoint == 2)
+        {
+            Board[row][col].direction = 'B';
+        }
+
+
     }
 
-    char library[SIZE_LIB][MAX_LENGHT];
+    char library[SIZE_LIB][MAX_LENGTH];
     int size_lib;
     printf("Please enter the number of words in the dictionary:\n");
     scanf_s(" %d", &size_lib);
@@ -494,15 +604,23 @@ void task5CrosswordGenerator()
         scanf_s(" %d", &size_lib);
     }
 
+    printf("Please enter the words for the dictionary:\n");
+    scanf_s("%*c");
     for (int i = 0; i < size_lib; i++)
     {
-        scanf_s(" %s", library[i]);
+        fgets(library[i], MAX_LENGTH, stdin);
+        library[i][strcspn(library[i], "\n")] = '\0';
     }
-
+    
     int count_word = 0;
     if (SolveCrossword(0,0, Board, size_cross, library, size_lib, count_word) == 0)
         printf("This crossword cannot be solved.\n");
     else
-        //print crossgrid 
-        ;
+        for (int i = 0; i < size_cross; i++, printf("\n"))
+        {
+            printf("| ");
+            for (int j = 0; j < size_cross; j++)
+                printf("%c |", Board[i][j].letter);
+        }
+        
 }
