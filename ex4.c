@@ -31,7 +31,7 @@ int main()
             "5. Crossword Generator\n"
             "6. Exit\n");
 
-        if (scanf_s("%d", &task))
+        if (scanf("%d", &task))
         {
             switch (task)
             {
@@ -90,7 +90,6 @@ int RobotPath(int x, int y)
 
 void task1RobotPaths()
 {
-    int counter = 0;
     int x, y;
     printf("Please enter the coordinates of the robot (column, row):\n");
     scanf(" %d %d", &x, &y);
@@ -207,7 +206,6 @@ int CheckBraces(char ch, int b00l, int* firstClosure)
 void task3ParenthesisValidator()
 {
     char ch;
-    char buffer = '\n';
     int b00l, firstClosure;
     b00l = 1;
     firstClosure = 1;
@@ -385,7 +383,7 @@ void task4QueensBattle()
 
 }
 
-typedef struct Square {
+struct Square {
     char letter;
     char direction; // 'H', 'V', 'B' (bidirectional)
     int lengthH;
@@ -394,7 +392,7 @@ typedef struct Square {
     int connectpoint;
 };
 
-typedef struct Optional {
+ struct Optional {
     int dirV;
     int dirH;
     int counter;
