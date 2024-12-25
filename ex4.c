@@ -272,7 +272,6 @@ void task3ParenthesisValidator()
     if (CheckBraces(ch, b00l, &firstClosure) == 0)
     {
         printf("The parentheses are not balanced correctly.\n");
-        scanf("%*s");
     }
     else
         printf("The parentheses are balanced correctly.\n");
