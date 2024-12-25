@@ -428,7 +428,7 @@ void task4QueensBattle()
 
 
 
-void initCross(Square Board[SIZE_CROSS][SIZE_CROSS], int size) {
+void initCross(struct Square Board[SIZE_CROSS][SIZE_CROSS], int size) {
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
             Board[i][j].letter = '#';
@@ -442,7 +442,7 @@ void initCross(Square Board[SIZE_CROSS][SIZE_CROSS], int size) {
 }
 
 
-Optional CheckPlacementWord(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS],
+struct Optional CheckPlacementWord(int row, int col, struct Square Board[SIZE_CROSS][SIZE_CROSS],
     int size_board, char lib[SIZE_LIB][MAX_LENGTH], int size_lib) {
     Optional OP;
     OP.dirV = OP.dirH = -1;
@@ -496,7 +496,7 @@ Optional CheckPlacementWord(int row, int col, Square Board[SIZE_CROSS][SIZE_CROS
 }
 
 
-void PlaceWord(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS], char word[MAX_LENGTH],
+void PlaceWord(int row, int col,struct Square Board[SIZE_CROSS][SIZE_CROSS], char word[MAX_LENGTH],
     char direction, char B[MAX_LENGTH]) {
     if (direction == 'H') {
         for (int k = 0; word[k] != '\0'; k++) {
@@ -514,7 +514,7 @@ void PlaceWord(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS], char word
     }
 }
 
-void UnplaceWord(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS], char word[MAX_LENGTH],
+void UnplaceWord(int row, int col,struct Square Board[SIZE_CROSS][SIZE_CROSS], char word[MAX_LENGTH],
     char direction, char B[MAX_LENGTH]) {
     if (direction == 'H') {
         for (int k = 0; word[k] != '\0'; k++) {
@@ -530,7 +530,7 @@ void UnplaceWord(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS], char wo
     }
 }
 
-void PrintBoard(Square Board[SIZE_CROSS][SIZE_CROSS], int size_board) {
+void PrintBoard(struct Square Board[SIZE_CROSS][SIZE_CROSS], int size_board) {
     for (int i = 0; i < size_board; i++, printf("\n")) {
         printf("| ");
         for (int j = 0; j < size_board; j++) {
@@ -539,7 +539,7 @@ void PrintBoard(Square Board[SIZE_CROSS][SIZE_CROSS], int size_board) {
     }
 }
 
-int SolveCrossword(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS], int size_board,
+int SolveCrossword(int row, int col,struct Square Board[SIZE_CROSS][SIZE_CROSS], int size_board,
     char lib[SIZE_LIB][MAX_LENGTH], int size_lib, int count_word, char used[SIZE_LIB][MAX_LENGTH],
     int used_counter, int slots)
 {
@@ -555,7 +555,7 @@ int SolveCrossword(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS], int s
     if (!Board[row][col].startOfWord)
         return SolveCrossword(row, col + 1, Board, size_board, lib, size_lib, count_word, used, used_counter, slots);
 
-    Optional OptPlace = CheckPlacementWord(row, col, Board, size_board, lib, size_lib);
+    struct Optional OptPlace = CheckPlacementWord(row, col, Board, size_board, lib, size_lib);
 
     if (OptPlace.dirV != -1) {
         char letters[MAX_LENGTH];
@@ -623,7 +623,7 @@ int SolveCrossword(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS], int s
 }
 
 void task5CrosswordGenerator() {
-    Square Board[SIZE_CROSS][SIZE_CROSS];
+    struct Square Board[SIZE_CROSS][SIZE_CROSS];
     int size_cross;
     printf("Please enter the dimensions of the crossword grid:\n");
     scanf("%d", &size_cross);
