@@ -425,7 +425,6 @@ void task4QueensBattle()
     if (PlaceQueen(0, 0, X_axis, Y_axis, CColor, Board, size, counterQueen) == 1)
     {
         printf("Solution:\n");
-        printf("%d", size);
         for (int i = 0; i < size; i++, printf("\n")) {
             for (int j = 0; j < size; j++) {
                 int isQueen = 0;
