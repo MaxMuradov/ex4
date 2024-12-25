@@ -28,7 +28,7 @@ struct Square {
 
 void task1RobotPaths();
 int task2HumanPyramid();
-void task3ParenthesisValidator();
+int task3ParenthesisValidator();
 void task4QueensBattle();
 void task5CrosswordGenerator();
 
@@ -257,7 +257,7 @@ int CheckBraces(char ch, int b00l, int* Closure)
 }
 
 
-void task3ParenthesisValidator()
+int task3ParenthesisValidator()
 {
     char ch;
     int b00l, Closure;
@@ -265,7 +265,6 @@ void task3ParenthesisValidator()
     Closure = 1;
     ch = '\n';
     printf("Please enter a term for validation:\n");
-    scanf("%*c");
     //i have used pointer to check if there is a closure
     //we learned pointers on prev lesson so i think its fine
     //i could actually make this check in other form but it will be much more comlicated 
@@ -274,10 +273,13 @@ void task3ParenthesisValidator()
     if (CheckBraces(ch, b00l, &Closure) == 0)
     {
         printf("The parentheses are not balanced correctly.\n");
+        return 1;
     }
     else
+    {
         printf("The parentheses are balanced correctly.\n");
-
+        return 0;
+    }
 
 
 }
