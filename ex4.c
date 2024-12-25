@@ -208,9 +208,10 @@ int task2HumanPyramid()
                     {
                         if (j + 2 <= n + i)
                         jj = j + 2;
+                        printf(" %2.2f", Weight(HumanPyramid, i, j)); 
                     }
 
-            printf(" %2.2f", Weight(HumanPyramid, i, j)); 
+            
             }
     
     return 1;
@@ -264,6 +265,7 @@ void task3ParenthesisValidator()
     Closure = 1;
     ch = '\n';
     printf("Please enter a term for validation:\n");
+    scanf("%*c");
     //i have used pointer to check if there is a least one closure
     //we learned pointers on prev lesson so i think its fine
     //i could actually make this check in other form but it will be much more comlicated 
@@ -272,6 +274,8 @@ void task3ParenthesisValidator()
     if (CheckBraces(ch, b00l, &Closure) == 0)
     {
         printf("The parentheses are not balanced correctly.\n");
+        scanf("%*[^\n]");
+        scanf("%*c");
     }
     else
         printf("The parentheses are balanced correctly.\n");
@@ -421,13 +425,14 @@ void task4QueensBattle()
     if (PlaceQueen(0, 0, X_axis, Y_axis, CColor, Board, size, counterQueen) == 1)
     {
         printf("Solution:\n");
+        printf("%d", size);
         for (int i = 0; i < size; i++, printf("\n"))
-            for (int j = 0; j < size; j++)
+            for (int j = 0; j < size ; j++)
             {
                 for (int k = 0; k < size; k++)
                     if (i == Y_axis[k] && j == X_axis[k])
-                        printf(" X");
-                printf(" *");
+                        printf("X ");
+                printf("* ");
             }
     }
     else
@@ -703,4 +708,3 @@ void task5CrosswordGenerator() {
         PrintBoard(Board, size_cross);
     }
 }
-
