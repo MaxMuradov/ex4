@@ -152,12 +152,12 @@ float Weight(float Pyramid[5][9], int i, int j)
 {
     float l_schoulder, r_schoulder;
 
-    if (check_bounds(i - 1, 0, 4) == 1 && check_bounds(j - 1, 0, 9) == 1)
+    if (check_bounds(i - 1, 0, 4) == 1 && check_bounds(j - 1, 0, 8) == 1)
         l_schoulder = Weight(Pyramid, i - 1, j - 1);
     else
         l_schoulder = 0;
 
-    if (check_bounds(i - 1, 0, 4) == 1 && check_bounds(j + 1, 0, 9) == 1)
+    if (check_bounds(i - 1, 0, 4) == 1 && check_bounds(j + 1, 0, 8) == 1)
         r_schoulder = Weight(Pyramid, i - 1, j + 1);
     else
         r_schoulder = 0;
