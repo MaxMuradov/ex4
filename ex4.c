@@ -461,7 +461,7 @@ struct Optional CheckPlacementWord(int row, int col, struct Square Board[SIZE_CR
                     validV = 0;
                 }
             }
-            if (validV == 1 && strlen(lib[w] == Board[row][col].lengthV) {
+            if (validV == 1 && strlen(lib[w]) == Board[row][col].lengthV) {
                 if (OP.dirV == -1)
                 {
                     OP.dirV = w;
@@ -478,7 +478,7 @@ struct Optional CheckPlacementWord(int row, int col, struct Square Board[SIZE_CR
                     validH = 0;
                 }
             }
-            if (validH == 1 && strlen(lib[w] == Board[row][col].lengthH) {
+            if (validH == 1 && strlen(lib[w]) == Board[row][col].lengthH) {
                 if (OP.dirH == -1)
                 {
                     OP.dirH = w;
