@@ -426,14 +426,21 @@ void task4QueensBattle()
     {
         printf("Solution:\n");
         printf("%d", size);
-        for (int i = 0; i < size; i++, printf("\n"))
-            for (int j = 0; j < size ; j++)
-            {
-                for (int k = 0; k < size; k++)
-                    if (i == Y_axis[k] && j == X_axis[k])
-                        printf("X ");
-                printf("* ");
-            }
+        for (int i = 0; i < size; i++, printf("\n")) {
+            for (int j = 0; j < size; j++) {
+                int isQueen = 0;
+                for (int k = 0; k < size; k++) {
+                    if (i == Y_axis[k] && j == X_axis[k]) {
+                    printf("X ");
+                    isQueen = 1;
+                    break; // Stop checking after finding a queen for this position
+                }
+        }
+        if (!isQueen) {
+            printf("* ");
+        }
+    }
+}
     }
     else
         printf("This puzzle cannot be solved.\n");
