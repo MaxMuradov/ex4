@@ -216,14 +216,14 @@ int task2HumanPyramid()
     return 1;
 }
 
-int CheckBraces(char ch, int b00l, int* firstClosure)
+int CheckBraces(char ch, int b00l, int* Closure)
 {
     char nextch;
     scanf("%c", &nextch);
 
     // Base case: end of input
     if (nextch == '\n')
-        return b00l - *firstClosure;
+        return b00l - *Closure;
 
     // Skip invalid characters
     if (nextch != '(' && nextch != ')' &&
@@ -231,7 +231,7 @@ int CheckBraces(char ch, int b00l, int* firstClosure)
         nextch != '{' && nextch != '}' &&
         nextch != '<' && nextch != '>')
     {
-        return CheckBraces(ch, b00l, firstClosure);
+        return CheckBraces(ch, b00l, Closure);
     }
 
     // Check if the current brace is matched by the next
@@ -240,14 +240,15 @@ int CheckBraces(char ch, int b00l, int* firstClosure)
         (ch == '{' && nextch == '}') ||
         (ch == '<' && nextch == '>'))
     {
-        *firstClosure = 0;
+        *Closure = 0;
         return 1;
     }
 
     // Check for opening braces to process further
     if (nextch == '(' || nextch == '[' || nextch == '{' || nextch == '<')
     {
-        return CheckBraces(nextch, b00l, firstClosure) && CheckBraces(ch, b00l, firstClosure);
+        *Closure = 1;
+        return CheckBraces(nextch, b00l, Closure) && CheckBraces(ch, b00l, Closure);
     }
 
     // Unmatched
@@ -258,9 +259,9 @@ int CheckBraces(char ch, int b00l, int* firstClosure)
 void task3ParenthesisValidator()
 {
     char ch;
-    int b00l, firstClosure;
+    int b00l, Closure;
     b00l = 1;
-    firstClosure = 1;
+    Closure = 1;
     ch = '\n';
     printf("Please enter a term for validation:\n");
     scanf("%*c");
@@ -269,7 +270,7 @@ void task3ParenthesisValidator()
     //i could actually make this check in other form but it will be much more comlicated 
     //so if its illegal to use them im sorry pleease dont reduce points
 
-    if (CheckBraces(ch, b00l, &firstClosure) == 0)
+    if (CheckBraces(ch, b00l, &Closure) == 0)
     {
         printf("The parentheses are not balanced correctly.\n");
     }
