@@ -401,7 +401,7 @@ void task4QueensBattle()
     int size, counter = 0;
     printf("Please enter the board dimensions:\n");
     scanf(" %d", &size);
-    printf("Please enter the %d*%d puzzle board:\n", size, size);
+    printf("Please enter a %d*%d puzzle board:\n", size, size);
 
     for (int i = 0; i < size; i++)
         for (int j = 0; j < size; j++)
