@@ -266,7 +266,7 @@ void task3ParenthesisValidator()
     ch = '\n';
     printf("Please enter a term for validation:\n");
     scanf("%*c");
-    //i have used pointer to check if there is a least one closure
+    //i have used pointer to check if there is a closure
     //we learned pointers on prev lesson so i think its fine
     //i could actually make this check in other form but it will be much more comlicated 
     //so if its illegal to use them im sorry pleease dont reduce points
@@ -274,8 +274,6 @@ void task3ParenthesisValidator()
     if (CheckBraces(ch, b00l, &Closure) == 0)
     {
         printf("The parentheses are not balanced correctly.\n");
-        scanf("%*[^\n]");
-        scanf("%*c");
     }
     else
         printf("The parentheses are balanced correctly.\n");
