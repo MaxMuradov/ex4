@@ -565,6 +565,8 @@ int SolveCrossword(int row, int col,struct Square Board[SIZE_CROSS][SIZE_CROSS],
     char lib[SIZE_LIB][MAX_LENGTH], int size_lib, int count_word, char used[SIZE_LIB][MAX_LENGTH],
     int used_counter, int slots)
 {
+printf("in");
+    
     if (count_word == slots)
         return 1;
 
