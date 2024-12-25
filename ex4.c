@@ -31,8 +31,34 @@ int task2HumanPyramid();
 void task3ParenthesisValidator();
 void task4QueensBattle();
 void task5CrosswordGenerator();
+
 int RobotPath(int x, int y);
 
+int check_bounds(int x, int border_l, int border_r);
+float Weight(float Pyramid[5][9], int i, int j);
+
+int CheckBraces(char ch, int b00l, int* firstClosure);
+
+void init(int Array[SIZE_QUEEN], int size);
+void Clone(char Array[SIZE_QUEEN], char Clone[SIZE_QUEEN], int size);
+int CheckUnusedColor(char c, char Color[SIZE_QUEEN], int size);
+int CheckAround(int X_arr[SIZE_QUEEN], int Y_arr[SIZE_QUEEN], int x, int y, int size, int countQueen);
+int Checkaxis(int Ax_arr[SIZE_QUEEN], int x, int size);
+int checkInArray(char ch, char Array[SIZE_QUEEN], int size);
+int PlaceQueen(int x, int y, int X_axis[SIZE_QUEEN], int Y_axis[SIZE_QUEEN], char Color[SIZE_QUEEN],
+    char Board[SIZE_QUEEN][SIZE_QUEEN], int size, int countQ);
+
+void initCross(Square Board[SIZE_CROSS][SIZE_CROSS], int size);
+Optional CheckPlacementWord(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS],
+    int size_board, char lib[SIZE_LIB][MAX_LENGTH], int size_lib);
+void PlaceWord(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS], char word[MAX_LENGTH],
+    char direction, char B[MAX_LENGTH]) ;
+void UnplaceWord(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS], char word[MAX_LENGTH],
+    char direction, char B[MAX_LENGTH]);
+void PrintBoard(Square Board[SIZE_CROSS][SIZE_CROSS], int size_board);
+int SolveCrossword(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS], int size_board,
+    char lib[SIZE_LIB][MAX_LENGTH], int size_lib, int count_word, char used[SIZE_LIB][MAX_LENGTH],
+    int used_counter, int slots);
 
 
 int main()
