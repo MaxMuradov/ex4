@@ -18,6 +18,21 @@ void task4QueensBattle();
 void task5CrosswordGenerator();
 int RobotPath(int x, int y);
 
+struct Square {
+    char letter;
+    char direction; // 'H', 'V', 'B' (bidirectional)
+    int lengthH;
+    int lengthV;
+    int startOfWord;
+    int connectpoint;
+};
+
+ struct Optional {
+    int dirV;
+    int dirH;
+    int counter;
+};
+
 int main()
 {
     int task = -1;
@@ -60,7 +75,7 @@ int main()
         }
         else
         {
-            scanf_s("%*s");
+            scanf("%*s");
         }
 
     } while (task != 6);
@@ -383,20 +398,7 @@ void task4QueensBattle()
 
 }
 
-struct Square {
-    char letter;
-    char direction; // 'H', 'V', 'B' (bidirectional)
-    int lengthH;
-    int lengthV;
-    int startOfWord;
-    int connectpoint;
-};
 
- struct Optional {
-    int dirV;
-    int dirH;
-    int counter;
-};
 
 void initCross(Square Board[SIZE_CROSS][SIZE_CROSS], int size) {
     for (int i = 0; i < size; i++) {
@@ -657,7 +659,7 @@ void task5CrosswordGenerator() {
     }
 
 
-    if (SolveCrossword(0, 0, Board, size_cross, library, size_lib, 0 , Used, 0, numSlots) == 0) {
+    if (SolveCrossword(0, 0, Board, size_cross, library, size_lib, 0 , Used, 0, numSlots)) {
         printf("This crossword cannot be solved.\n");
     }
     else {
