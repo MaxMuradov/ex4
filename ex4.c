@@ -264,7 +264,6 @@ void task3ParenthesisValidator()
     Closure = 1;
     ch = '\n';
     printf("Please enter a term for validation:\n");
-    scanf("%*c");
     //i have used pointer to check if there is a least one closure
     //we learned pointers on prev lesson so i think its fine
     //i could actually make this check in other form but it will be much more comlicated 
