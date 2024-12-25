@@ -203,7 +203,16 @@ int task2HumanPyramid()
     printf("The total weight on each cheerleader is:\n");
     for (int i = 0; i <= n; i++, printf("\n"))
         for (int j = 0; j < 9; j++)
+            {
+                if ((j == n - i) || (j == jj))
+                    {
+                        if (j + 2 <= n + i)
+                        jj = j + 2;
+                    }
+
             printf(" %2.2f", Weight(HumanPyramid, i, j)); 
+            }
+    
     return 1;
 }
 
@@ -412,6 +421,7 @@ void task4QueensBattle()
     init(Y_axis, size);
     if (PlaceQueen(0, 0, X_axis, Y_axis, CColor, Board, size, counterQueen) == 1)
     {
+        printf("Solution:\n");
         for (int i = 0; i < size; i++, printf("\n"))
             for (int j = 0; j < size; j++)
             {
@@ -422,7 +432,7 @@ void task4QueensBattle()
             }
     }
     else
-        printf("NO Solution\n");
+        printf("This puzzle cannot be solved.\n");
 
 }
 
