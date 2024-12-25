@@ -232,7 +232,7 @@ int CheckBraces(char ch, int b00l, int* Closure)
         nextch != '{' && nextch != '}' &&
         nextch != '<' && nextch != '>')
     {
-        return CheckBraces(ch, b00l, Closure);
+        b00l = CheckBraces(ch, b00l, Closure);
     }
 
     // Check if the current brace is matched by the next
@@ -242,18 +242,18 @@ int CheckBraces(char ch, int b00l, int* Closure)
         (ch == '<' && nextch == '>'))
     {
         *Closure = 0;
-        return 1;
+        b00l = 1;
     }
 
     // Check for opening braces to process further
     if (nextch == '(' || nextch == '[' || nextch == '{' || nextch == '<')
     {
         *Closure = 1;
-        return CheckBraces(nextch, b00l, Closure) && CheckBraces(ch, b00l, Closure);
+        b00l = CheckBraces(nextch, b00l, Closure) && CheckBraces(ch, b00l, Closure);
     }
 
     // Unmatched
-    return 0;
+    b00l = 0;
 }
 
 
@@ -275,7 +275,6 @@ int task3ParenthesisValidator()
     if (CheckBraces(ch, b00l, &Closure) == 0)
     {
         printf("The parentheses are not balanced correctly.\n");
-        while ((getchar()) != '\n');
         return 1;
     }
     else
