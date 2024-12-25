@@ -179,40 +179,41 @@ int task2HumanPyramid()
     int n = 4;
     int jj = -1;
 
-    for (int i = 0; i <= n; i++, jj = -1)
-    {
-        for (int j = 0; j < 9; j++)
-        {
-            HumanPyramid[i][j] = 0.0; // Initialize to 0
+  for (int i = 0; i <= n; i++) {
+    int jj = -1; // Reset jj for each row
+    for (int j = 0; j < 9; j++) {
+        HumanPyramid[i][j] = 0.0; // Initialize to 0
 
-            if ((j == n - i) || (j == jj))
-            {
-                if (j + 2 <= n + i)
-                    jj = j + 2;
+        // Only allow weights where valid cheerleaders exist in the pyramid structure
+        if ((j == n - i) || (j == jj)) {
+            if (jj == -1) jj = n - i; // Start from the leftmost valid position
+            if (j + 2 <= n + i) jj = j + 2;
 
-                scanf(" %f", &HumanPyramid[i][j]);
-                if (HumanPyramid[i][j] < 0)
-                {
-                    printf("Negative weights are not supported.\n");
-                    return 0;
-                }
+            // Input weight for valid cheerleaders
+            scanf(" %f", &HumanPyramid[i][j]);
+            if (HumanPyramid[i][j] < 0) {
+                printf("Negative weights are not supported.\n");
+                return 0;
             }
         }
     }
+}
 
-    printf("The total weight on each cheerleader is:\n");
-    for (int i = 0; i <= n; i++, printf("\n"))
-        for (int j = 0; j < 9; j++)
-            {
-                if ((j == n - i) || (j == jj))
-                    {
-                        if (j + 2 <= n + i)
-                        jj = j + 2;
-                        printf(" %2.2f", Weight(HumanPyramid, i, j)); 
-                    }
+for (int i = 0; i <= n; i++) {
+    int jj = -1; // Reset jj for each row
+    for (int j = 0; j < 9; j++) {
+        // Only calculate weights for valid cheerleaders
+        if ((j == n - i) || (j == jj)) {
+            if (jj == -1) jj = n - i; // Start from the leftmost valid position
+            if (j + 2 <= n + i) jj = j + 2;
 
-            
-            }
+            // Print weight for valid cheerleaders
+            printf(" %2.2f", Weight(HumanPyramid, i, j));
+        }
+    }
+    printf("\n"); // Move to the next row
+}
+
     
     return 1;
 }
