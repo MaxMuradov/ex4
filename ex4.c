@@ -265,6 +265,8 @@ int task3ParenthesisValidator()
     Closure = 1;
     ch = '\n';
     printf("Please enter a term for validation:\n");
+    scanf("%*c");
+    
     //i have used pointer to check if there is a closure
     //we learned pointers on prev lesson so i think its fine
     //i could actually make this check in other form but it will be much more comlicated 
@@ -273,6 +275,7 @@ int task3ParenthesisValidator()
     if (CheckBraces(ch, b00l, &Closure) == 0)
     {
         printf("The parentheses are not balanced correctly.\n");
+        while ((getchar()) != '\n');
         return 1;
     }
     else
