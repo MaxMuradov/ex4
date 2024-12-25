@@ -11,13 +11,6 @@ Assignment: ex4
 #define SIZE_LIB 100
 #define MAX_LENGTH 15
 
-void task1RobotPaths();
-int task2HumanPyramid();
-void task3ParenthesisValidator();
-void task4QueensBattle();
-void task5CrosswordGenerator();
-int RobotPath(int x, int y);
-
 struct Square {
     char letter;
     char direction; // 'H', 'V', 'B' (bidirectional)
@@ -32,6 +25,15 @@ struct Square {
     int dirH;
     int counter;
 };
+
+void task1RobotPaths();
+int task2HumanPyramid();
+void task3ParenthesisValidator();
+void task4QueensBattle();
+void task5CrosswordGenerator();
+int RobotPath(int x, int y);
+
+
 
 int main()
 {
