@@ -48,15 +48,15 @@ int checkInArray(char ch, char Array[SIZE_QUEEN], int size);
 int PlaceQueen(int x, int y, int X_axis[SIZE_QUEEN], int Y_axis[SIZE_QUEEN], char Color[SIZE_QUEEN],
     char Board[SIZE_QUEEN][SIZE_QUEEN], int size, int countQ);
 
-void initCross(Square Board[SIZE_CROSS][SIZE_CROSS], int size);
-Optional CheckPlacementWord(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS],
+void initCross(struct Square Board[SIZE_CROSS][SIZE_CROSS], int size);
+struct Optional CheckPlacementWord(int row, int col,struct Square Board[SIZE_CROSS][SIZE_CROSS],
     int size_board, char lib[SIZE_LIB][MAX_LENGTH], int size_lib);
-void PlaceWord(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS], char word[MAX_LENGTH],
+void PlaceWord(int row, int col,struct Square Board[SIZE_CROSS][SIZE_CROSS], char word[MAX_LENGTH],
     char direction, char B[MAX_LENGTH]) ;
-void UnplaceWord(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS], char word[MAX_LENGTH],
+void UnplaceWord(int row, int col,struct Square Board[SIZE_CROSS][SIZE_CROSS], char word[MAX_LENGTH],
     char direction, char B[MAX_LENGTH]);
-void PrintBoard(Square Board[SIZE_CROSS][SIZE_CROSS], int size_board);
-int SolveCrossword(int row, int col, Square Board[SIZE_CROSS][SIZE_CROSS], int size_board,
+void PrintBoard(struct Square Board[SIZE_CROSS][SIZE_CROSS], int size_board);
+int SolveCrossword(int row, int col,struct Square Board[SIZE_CROSS][SIZE_CROSS], int size_board,
     char lib[SIZE_LIB][MAX_LENGTH], int size_lib, int count_word, char used[SIZE_LIB][MAX_LENGTH],
     int used_counter, int slots);
 
@@ -444,7 +444,7 @@ void initCross(struct Square Board[SIZE_CROSS][SIZE_CROSS], int size) {
 
 struct Optional CheckPlacementWord(int row, int col, struct Square Board[SIZE_CROSS][SIZE_CROSS],
     int size_board, char lib[SIZE_LIB][MAX_LENGTH], int size_lib) {
-    Optional OP;
+    struct Optional OP;
     OP.dirV = OP.dirH = -1;
     int counter = 0;
 
@@ -461,7 +461,7 @@ struct Optional CheckPlacementWord(int row, int col, struct Square Board[SIZE_CR
                     validV = 0;
                 }
             }
-            if (validV && strlen(lib[w]) == Board[row][col].lengthV) {
+            if (validV == 1 && strlen(lib[w] == Board[row][col].lengthV) {
                 if (OP.dirV == -1)
                 {
                     OP.dirV = w;
@@ -478,7 +478,7 @@ struct Optional CheckPlacementWord(int row, int col, struct Square Board[SIZE_CR
                     validH = 0;
                 }
             }
-            if (validH && strlen(lib[w]) == Board[row][col].lengthH) {
+            if (validH == 1 && strlen(lib[w] == Board[row][col].lengthH) {
                 if (OP.dirH == -1)
                 {
                     OP.dirH = w;
