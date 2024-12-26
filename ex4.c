@@ -241,7 +241,7 @@ int CheckBraces(char ch, int b00l, int* Closure)
     }
 
     // Unmatched
-    b00l = 0;
+    return 0;
 }
 
 
@@ -454,6 +454,8 @@ int TryPlaceWord(char Lib[], char Board[][SIZE_CROSS], int row, int col, char di
         
     if (direction == 'V')
         return TryPlaceWord(Lib, Board, row + 1, col, direction, i + 1); 
+
+    return 0;
 }
 
 
