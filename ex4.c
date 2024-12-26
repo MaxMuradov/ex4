@@ -46,7 +46,7 @@ void PlaceWord(char Board[][SIZE_CROSS], int row, int col, char direction, char 
 void UnplaceWord(char Board[][SIZE_CROSS], int row, int col, int length, char direction);
 int SolveCrossword(int row, int col, char Lib[][SIZE_LIB], struct Crossword cword[],  
                    int words_placed, char Board[][SIZE_CROSS], int Used[], 
-                   int size_lib, int slots, int index_slot) 
+                   int size_lib, int slots, int index_slot);
 
 
 int main()
