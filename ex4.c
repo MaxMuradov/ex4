@@ -214,6 +214,13 @@ int CheckBraces(char ch, int b00l, int* Closure)
     if (nextch == '\n')
         return b00l - *Closure;
 
+    if (b00l == 0)
+    {
+        scanf("%*[^\n]");
+        scanf("%*c");
+        return 0;
+    }
+
     // Skip invalid characters
     if (nextch != '(' && nextch != ')' &&
         nextch != '[' && nextch != ']' &&
