@@ -216,6 +216,7 @@ int CheckBraces(char ch, int b00l, int* Closure)
 
     if (b00l == 0)
     {
+        //Clear buff if exit is earlier than \n
         scanf("%*[^\n]");
         scanf("%*c");
         return 0;
@@ -237,7 +238,7 @@ int CheckBraces(char ch, int b00l, int* Closure)
         (ch == '<' && nextch == '>'))
     {
         *Closure = 0;
-        return = 1;
+        return 1;
     }
 
     // Check for opening braces to process further
@@ -248,6 +249,9 @@ int CheckBraces(char ch, int b00l, int* Closure)
     }
 
     // Unmatched
+    //Clear buff if exit is earlier than \n
+    scanf("%*[^\n]");
+    scanf("%*c");
     return 0;
 }
 
@@ -587,7 +591,7 @@ void task5CrosswordGenerator() {
             {
             printf("|");
             for (int j = 0; j < size_board; j++) 
-                printf(" %c|", Board[i][j]);
+                printf(" %c |", Board[i][j]);
             }
     }
     else 
