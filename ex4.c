@@ -11,19 +11,12 @@ Assignment: ex4
 #define SIZE_LIB 100
 #define MAX_LENGTH 15
 
-struct Square {
-    char letter;
-    char direction; // 'H', 'V', 'B' (bidirectional)
-    int lengthH;
-    int lengthV;
-    int startOfWord;
-    int connectpoint;
-};
-
- struct Optional {
-    int dirV;
-    int dirH;
-    int counter;
+struct Crossword 
+{
+    int row;        
+    int col;        
+    int length;     
+    char dir;       
 };
 
 void task1RobotPaths();
@@ -48,17 +41,12 @@ int checkInArray(char ch, char Array[SIZE_QUEEN], int size);
 int PlaceQueen(int x, int y, int X_axis[SIZE_QUEEN], int Y_axis[SIZE_QUEEN], char Color[SIZE_QUEEN],
     char Board[SIZE_QUEEN][SIZE_QUEEN], int size, int countQ);
 
-void initCross(struct Square Board[SIZE_CROSS][SIZE_CROSS], int size);
-struct Optional CheckPlacementWord(int row, int col,struct Square Board[SIZE_CROSS][SIZE_CROSS],
-    int size_board, char lib[SIZE_LIB][MAX_LENGTH], int size_lib);
-void PlaceWord(int row, int col,struct Square Board[SIZE_CROSS][SIZE_CROSS], char word[MAX_LENGTH],
-    char direction, char B[MAX_LENGTH]) ;
-void UnplaceWord(int row, int col,struct Square Board[SIZE_CROSS][SIZE_CROSS], char word[MAX_LENGTH],
-    char direction, char B[MAX_LENGTH]);
-void PrintBoard(struct Square Board[SIZE_CROSS][SIZE_CROSS], int size_board);
-int SolveCrossword(int row, int col,struct Square Board[SIZE_CROSS][SIZE_CROSS], int size_board,
-    char lib[SIZE_LIB][MAX_LENGTH], int size_lib, int count_word, char used[SIZE_LIB][MAX_LENGTH],
-    int used_counter, int slots);
+int TryPlaceWord(char Lib[], char Board[][SIZE_CROSS], int row, int col, char direction, int i);
+void PlaceWord(char Board[][SIZE_CROSS], int row, int col, char direction, char Lib[], int i);
+void UnplaceWord(char Board[][SIZE_CROSS], int row, int col, int length, char direction);
+int SolveCrossword(int row, int col, char Lib[][SIZE_LIB], struct Crossword cword[],  
+                   int words_placed, char Board[][SIZE_CROSS], int Used[], 
+                   int size_lib, int slots, int index_slot) 
 
 
 int main()
@@ -449,272 +437,150 @@ void task4QueensBattle()
 }
 
 
-
-void initCross(struct Square Board[SIZE_CROSS][SIZE_CROSS], int size) {
-    for (int i = 0; i < size; i++) {
-        for (int j = 0; j < size; j++) {
-            Board[i][j].letter = '#';
-            Board[i][j].direction = ' ';
-            Board[i][j].lengthH = 0;
-            Board[i][j].lengthV = 0;
-            Board[i][j].startOfWord = 0;
-            Board[i][j].connectpoint = 0;
-        }
-    }
-}
-
-
-struct Optional CheckPlacementWord(int row, int col, struct Square Board[SIZE_CROSS][SIZE_CROSS],
-    int size_board, char lib[SIZE_LIB][MAX_LENGTH], int size_lib) {
-    struct Optional OP;
-    OP.dirV = OP.dirH = -1;
-    int counter = 0;
-
-
-    for (int w = 0; w < size_lib; w++) {
-        int validV = 1, validH = 1;
-
-
-        // Check vertical placement
-        if ((Board[row][col].direction == 'V' || Board[row][col].direction == 'B')) {
-            for (int k = 0; k < Board[row][col].lengthV; k++) {
-                if (row + k >= size_board ||
-                    (Board[row + k][col].letter != ' ' && Board[row + k][col].letter != lib[w][k])) {
-                    validV = 0;
-                }
-            }
-            if (validV == 1 && (int)strlen(lib[w]) == Board[row][col].lengthV) {
-                if (OP.dirV == -1)
-                {
-                    OP.dirV = w;
-                }
-                counter++;
-            }
-        }
-
-        // Check horizontal placement
-        if ((Board[row][col].direction == 'H' || Board[row][col].direction == 'B')) {
-            for (int k = 0; k < Board[row][col].lengthH; k++) {
-                if (col + k >= size_board ||
-                    (Board[row][col + k].letter != ' ' && Board[row][col + k].letter != lib[w][k])) {
-                    validH = 0;
-                }
-            }
-            if (validH == 1 && (int)strlen(lib[w]) == Board[row][col].lengthH) {
-                if (OP.dirH == -1)
-                {
-                    OP.dirH = w;
-                }
-                counter++;
-            }
-
-        }
-
-        
-        if (OP.dirV != -1 && OP.dirH != -1) break; // Early exit if both directions are valid
-    }
-    OP.counter = counter;
-    return OP;
-}
-
-
-void PlaceWord(int row, int col,struct Square Board[SIZE_CROSS][SIZE_CROSS], char word[MAX_LENGTH],
-    char direction, char B[MAX_LENGTH]) {
-    if (direction == 'H') {
-        for (int k = 0; word[k] != '\0'; k++) {
-            if (Board[row][col + k].letter != ' ')
-                B[col + k] = Board[row][col + k].letter;
-            Board[row][col + k].letter = word[k];
-        }
-    }
-    else if (direction == 'V') {
-        for (int k = 0; word[k] != '\0'; k++) {
-            if (Board[row + k][col].letter != ' ')
-                B[row + k] = Board[row + k][col].letter;
-            Board[row + k][col].letter = word[k];
-        }
-    }
-}
-
-void UnplaceWord(int row, int col,struct Square Board[SIZE_CROSS][SIZE_CROSS], char word[MAX_LENGTH],
-    char direction, char B[MAX_LENGTH]) {
-    if (direction == 'H') {
-        for (int k = 0; word[k] != '\0'; k++) {
-            if (Board[row][col + k].letter != B[col + k])
-                Board[row][col + k].letter = ' ';
-        }
-    }
-    else if (direction == 'V') {
-        for (int k = 0; word[k] != '\0'; k++) {
-            if (Board[row + k][col].letter != B[row + k])
-                Board[row + k][col].letter = ' ';
-        }
-    }
-}
-
-void PrintBoard(struct Square Board[SIZE_CROSS][SIZE_CROSS], int size_board) {
-    for (int i = 0; i < size_board; i++, printf("\n")) {
-        printf("| ");
-        for (int j = 0; j < size_board; j++) {
-            printf("%c |", Board[i][j].letter);
-        }
-    }
-}
-
-int SolveCrossword(int row, int col,struct Square Board[SIZE_CROSS][SIZE_CROSS], int size_board,
-    char lib[SIZE_LIB][MAX_LENGTH], int size_lib, int count_word, char used[SIZE_LIB][MAX_LENGTH],
-    int used_counter, int slots)
+// Function to check if a word can be placed in the given slot
+int TryPlaceWord(char Lib[], char Board[][SIZE_CROSS], int row, int col, char direction, int i) 
 {
-printf("in");
-    
-    if (count_word == slots)
+    // If we have placed the whole word, return 1
+    if (Lib[i] == '\0') 
         return 1;
 
-    if (col >= size_board)
-        return SolveCrossword(row + 1, 0, Board, size_board, lib, size_lib, count_word, used, used_counter, slots);
-
-    if (row >= size_board)
+    // If not return 0
+    if (Board[row][col] != '#' && Board[row][col] != Lib[i])
         return 0;
 
-    if (!Board[row][col].startOfWord)
-        return SolveCrossword(row, col + 1, Board, size_board, lib, size_lib, count_word, used, used_counter, slots);
+    // Move to the next cell
+    if (direction == 'H') 
+        return TryPlaceWord(Lib, Board, row, col + 1, direction, i + 1);
+        
+    if (direction == 'V')
+        return TryPlaceWord(Lib, Board, row + 1, col, direction, i + 1); 
+}
 
-    struct Optional OptPlace = CheckPlacementWord(row, col, Board, size_board, lib, size_lib);
 
-    if (OptPlace.dirV != -1) {
-        char letters[MAX_LENGTH];
-        //printf("Placing word %s verticaly:\n", lib[OptPlace.dirV]);
-        PlaceWord(row, col, Board, lib[OptPlace.dirV], 'V', letters);
-        //PrintBoard(Board, size_board);
+void PlaceWord(char Board[][SIZE_CROSS], int row, int col, char direction, char Lib[], int i) 
+{
+    // Base case
+    if (Lib[i] == '\0') 
+        return; 
+        
+    // Place the current character
+    Board[row][col] = Lib[i];
+    
+    // Move to the next character 
+    if (direction == 'H') 
+        PlaceWord(Board, row, col + 1, direction, Lib, i + 1);
+    else if (direction == 'V') 
+        PlaceWord(Board, row + 1, col, direction, Lib, i + 1);
+}
 
-        strcpy(used[used_counter], lib[OptPlace.dirV]);
-        lib[OptPlace.dirV][0] = '\0';
 
-        if (OptPlace.dirH != -1)
-            if (SolveCrossword(row, col, Board, size_board, lib, size_lib, count_word + 1, used, used_counter + 1,
-                slots))
+void UnplaceWord(char Board[][SIZE_CROSS], int row, int col, int length, char direction) 
+{ 
+    // Base case
+    if (length == 0) 
+        return;
+        
+    // Reset cell
+    Board[row][col] = '#';  
+    
+    // Move to the next cell
+    if (direction == 'H')
+        UnplaceWord(Board, row, col + 1, length - 1, direction);
+    else if (direction == 'V')
+        UnplaceWord(Board, row + 1, col, length - 1, direction);
+}
+
+
+int SolveCrossword(int row, int col, char Lib[][SIZE_LIB], struct Crossword cword[],  
+                   int words_placed, char Board[][SIZE_CROSS], int Used[], 
+                   int size_lib, int slots, int index_slot) 
+{
+    // Base case: if all words are placed or all slots are filled, return 
+    if (words_placed >= size_lib)
+        return 0;
+    if (index_slot >= slots)
+        return 1;
+
+    // Get the current word
+    char tmp[MAX_LENGTH];
+    strcpy(tmp, Lib[words_placed]); 
+
+    // Check if the word can be placed
+    if (!Used[words_placed] && (int)strlen(tmp) == cword[index_slot].length)
+    {
+        if (TryPlaceWord(tmp, Board, cword[index_slot].row, cword[index_slot].col, cword[index_slot].dir, 0))
+        {
+            // Place the word
+            PlaceWord(Board, cword[index_slot].row, cword[index_slot].col, cword[index_slot].dir, tmp, 0);
+            Used[words_placed] = 1;
+            
+            // Move to the next slot
+            if (SolveCrossword(row, col, Lib, cword, 0, Board, Used, size_lib, slots, index_slot + 1))
                 return 1;
-        if (SolveCrossword(row, col + 1, Board, size_board, lib, size_lib, count_word + 1, used, used_counter + 1,
-            slots))
-            return 1;
 
-        //printf("Deleting word %s verticaly:\n", used[used_counter]);
-        UnplaceWord(row, col, Board, used[used_counter], 'V', letters);
-        //PrintBoard(Board, size_board);
-        strcpy(lib[OptPlace.dirV], used[used_counter]);
-
-        char tmp[MAX_LENGTH] = { '\0' };
-        strcpy(lib[OptPlace.dirV], tmp);
-        strcpy(lib[OptPlace.dirV], lib[size_lib - 1]);
-        strcpy(lib[size_lib - 1], tmp);
-
+            // Backtrack
+            UnplaceWord(Board, cword[index_slot].row, cword[index_slot].col, cword[index_slot].length, cword[index_slot].dir);
+            Used[words_placed] = 0;
+        }
     }
-
-    if (OptPlace.dirH != -1) {
-        char letters[MAX_LENGTH];
-
-        //printf("Placing word %s horizontaly:\n", lib[OptPlace.dirH]);
-        PlaceWord(row, col, Board, lib[OptPlace.dirH], 'H', letters);
-        //PrintBoard(Board, size_board);
-
-        strcpy(used[used_counter], lib[OptPlace.dirH]);
-        lib[OptPlace.dirH][0] = '\0';
-
-        if (OptPlace.dirV != -1)
-            if (SolveCrossword(row, col, Board, size_board, lib, size_lib, count_word + 1, used, used_counter + 1,
-                slots))
-                return 1;
-        if (SolveCrossword(row, col + 1, Board, size_board, lib, size_lib, count_word + 1, used, used_counter + 1,
-            slots))
-            return 1;
-
-
-        //printf("Deleting word %s horizonaly:\n", used[used_counter]);
-        UnplaceWord(row, col, Board, used[used_counter], 'H', letters);
-        //PrintBoard(Board, size_board);
-        strcpy(lib[OptPlace.dirH], used[used_counter]);
-
-        char tmp[MAX_LENGTH] = { '\0' };
-        strcpy(lib[OptPlace.dirH], tmp);
-        strcpy(lib[OptPlace.dirH], lib[size_lib - 1]);
-        strcpy(lib[size_lib - 1], tmp);
-
-    }
-
-    if (OptPlace.counter != 1)
-        return SolveCrossword(row, col, Board, size_board, lib, size_lib, count_word, used, used_counter, slots);
-    return SolveCrossword(row, col + 1, Board, size_board, lib, size_lib, count_word, used, used_counter, slots);
+    
+    // Try the next word
+    return SolveCrossword(row, col, Lib, cword, words_placed + 1, Board, Used, size_lib, slots, index_slot); 
 }
 
 void task5CrosswordGenerator() {
-    struct Square Board[SIZE_CROSS][SIZE_CROSS];
-    int size_cross;
+    
+    int size_board;
     printf("Please enter the dimensions of the crossword grid:\n");
-    scanf("%d", &size_cross);
-    initCross(Board, size_cross);
-
-    int numSlots;
+    scanf("%d", &size_board);
+    
+    int slots;
     printf("Please enter the number of slots in the crossword:\n");
-    scanf("%d", &numSlots);
-
-    int row, col, length;
-    char direction;
+    scanf("%d", &slots);
+    
+    struct Crossword crossword[SIZE_LIB];
     printf("Please enter the details for each slot (Row, Column, Length, Direction):\n");
-    for (int i = 0; i < numSlots; i++) {
-        scanf(" %d", &row);
-        scanf(" %d", &col);
-        scanf(" %d", &length);
-        scanf(" %c", &direction);
-
-        Board[row][col].startOfWord++;
-        if (direction == 'H') {
-            Board[row][col].direction = 'H';
-            Board[row][col].lengthH = length;
-            for (int i = col; i < Board[row][col].lengthH + col; i++)
-            {
-                Board[row][i].letter = ' ';
-                Board[row][i].connectpoint++;
-            }
-        }
-
-        if (direction == 'V') {
-            Board[row][col].direction = 'V';
-            Board[row][col].lengthV = length;
-            for (int i = row; i < Board[row][col].lengthV + row; i++)
-            {
-                Board[i][col].letter = ' ';
-                Board[i][col].connectpoint++;
-            }
-
-            if (Board[row][col].startOfWord == 2) {
-                Board[row][col].direction = 'B';
-            }
-        }
+    for (int i = 0; i < slots; i++) {
+        scanf(" %d", &crossword[i].row);
+        scanf(" %d", &crossword[i].col);
+        scanf(" %d", &crossword[i].length);
+        scanf(" %c", &crossword[i].dir);
     }
-
-    char library[SIZE_LIB][MAX_LENGTH];
-    char Used[SIZE_LIB][MAX_LENGTH];
+    
     int size_lib;
     printf("Please enter the number of words in the dictionary:\n");
     scanf("%d", &size_lib);
-    while (size_lib < numSlots)
-    {
-        printf("The dictionary must contain at least 8 words.Please enter a valid dictionary size:\n");
+    while (size_lib < slots) {
+        printf("The dictionary must contain at least %d words. Please enter a valid dictionary size:\n", slots);
         scanf("%d", &size_lib);
     }
     
+    char Library[MAX_LENGTH][SIZE_LIB];
     printf("Please enter the words for the dictionary:\n");
-    for (int i = 0; i < size_lib; i++) {
-        scanf(" %s", library[i]);
-        //fgets(library[i], MAX_LENGTH, stdin);
-        //library[i][strcspn(library[i], "\n")] = '\0';
+    for (int i = 0; i < size_lib; i++)
+        scanf(" %s", Library[i]);
+    
+    
+    char Board[SIZE_CROSS][SIZE_CROSS];
+    for (int i = 0; i < size_board; i++) {
+        for (int j = 0; j < size_board; j++) {
+            Board[i][j] = '#'; 
+        }
     }
+    
+    int Used[SIZE_LIB] = {0}; // Array to track used words
 
 
-    if (SolveCrossword(0, 0, Board, size_cross, library, size_lib, 0 , Used, 0, numSlots)) {
+    if (SolveCrossword(0, 0, Library, crossword, 0, Board, Used, size_lib, slots, 0))
+    {
+        for (int i = 0; i < size_board; i++, printf("\n"))
+            {
+            printf("|");
+            for (int j = 0; j < size_board; j++) 
+                printf(" %c|", Board[i][j]);
+            }
+    }
+    else 
         printf("This crossword cannot be solved.\n");
-    }
-    else {
-        PrintBoard(Board, size_cross);
-    }
+    
 }
