@@ -528,7 +528,8 @@ int SolveCrossword(int row, int col, char Lib[][SIZE_LIB], struct Crossword cwor
                 return 1;
 
             // Backtrack
-            UnplaceWord(Board, cword[index_slot].row, cword[index_slot].col, cword[index_slot].length, cword[index_slot].dir);
+            UnplaceWord(Board, cword[index_slot].row, cword[index_slot].col, cword[index_slot].length, 
+                cword[index_slot].dir);
             Used[words_placed] = 0;
         }
     }
